@@ -10,11 +10,26 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0-rc1.20217.1" />
-    <PackageReference Include="Telerik.Documents.SpreadsheetStreaming" Version="2020.2.504" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="2.13.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\AmnasKitchen.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Telerik.Blazor">
+      <HintPath>..\telerik\Telerik.Blazor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.DataSource">
+      <HintPath>..\telerik\Telerik.DataSource.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.SpreadsheetStreaming">
+      <HintPath>..\telerik\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Recurrence">
+      <HintPath>..\telerik\Telerik.Recurrence.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Zip">
+      <HintPath>..\telerik\Telerik.Zip.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>
