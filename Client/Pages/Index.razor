@@ -1,23 +1,25 @@
 ﻿@page "/"
+@inject HttpClient Http
 
 <NavMenu />
-
-
-  <section id="items">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h2>Most Viewed Recipes</h2>
-        </div>
+<div style="color: white">
+<h3>User : @userName</h3>
+</div>
+<section id="items">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2>Most Viewed Recipes</h2>
       </div>
-      <div class="row">
-        @for (int i = 0; i < 9; i++)
-        {
-          <!-- First recipe item -->
+    </div>
+    <div class="row">
+      @for (int i = 0; i < 9; i++)
+      {
+        <!-- First recipe item -->
         <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
           <div class=" recipe-item card">
             <a href="/recipe">
-            <img src="images/bbq-pork-ribs.jpg" class="card-img-top" alt="Barbecue Ribs">
+              <img src="images/bbq-pork-ribs.jpg" class="card-img-top" alt="Barbecue Ribs">
             </a>
             <div class="card-body">
               <p class="card-text">
@@ -33,97 +35,19 @@
               </p>
             </div>
           </div>
-          @*<div class="recipe-item text-center">
-            <a href="/recipe">
-              <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-            </a>
-            <br />
-            <h3>Barbecue Ribs</h3>
-          </div>*@
         </div>
-        }
-        @*
-    <!-- Second recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
+      }
     </div>
-    <!-- Third recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Fourth recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Fifth recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Sixth recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Seventh recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Eight recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-    <!-- Ninth recipe item -->
-    <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-      <div class="recipe-item text-center">
-        <a href="recipe.html">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" />
-        </a>
-        <br />
-        <h3>Barbecue Ribs</h3>
-      </div>
-    </div>
-        *@
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
+
+
+@code {
+  string userName;
+
+  protected override async Task OnInitializedAsync()
+  {
+    userName = await Http.GetStringAsync("Users");
+  }
+
+}
