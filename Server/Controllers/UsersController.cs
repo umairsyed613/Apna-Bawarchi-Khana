@@ -23,9 +23,17 @@ namespace AmnasKitchen.Server.Controllers
         [HttpGet]
         public string Get()
         {
-            using var connection = new SqlConnection(_configuration.GetConnectionString("AmnasKitchenDb"));
-            connection.Open();
-            return connection.QueryFirstOrDefault<string>(@"SELECT top 1 username FROM Tbl_Users");
+            try
+            {
+                using var connection = new SqlConnection(_configuration.GetConnectionString("DATABASE_URL"));
+                connection.Open();
+
+                return connection.QueryFirstOrDefault<string>(@"SELECT top 1 username FROM Tbl_Users");
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
