@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+
+using AmnasKitchen.Server.Services;
+using AmnasKitchen.Shared;
 
 using Dapper;
 
@@ -16,26 +18,23 @@ namespace AmnasKitchen.Server.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly DatabaseConnectionHandler _databaseConnectionHandler;
 
-        public UsersController(IConfiguration configuration)
+        public UsersController(IConfiguration configuration, DatabaseConnectionHandler connectionHandler)
         {
             _configuration = configuration;
+            _databaseConnectionHandler = connectionHandler ?? throw new ArgumentNullException(nameof(connectionHandler));
         }
 
-        [HttpGet]
-        public string Get()
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
             try
             {
-#if DEBUG
-                var conn = _configuration.GetConnectionString("DATABASE_URL");
-#else
-                var conn = Environment.GetEnvironmentVariable("DATABASE_URL");
-#endif
-                using var connection = new SqlConnection(conn);
+                using var connection = new SqlConnection(_databaseConnectionHandler.GetDbConnectionString());
                 connection.Open();
 
-                return connection.QueryFirstOrDefault<string>(@"SELECT top 1 username FROM Tbl_Users");
+                return await connection.QueryAsync<User>(@"SELECT * FROM Tbl_Users");
             }
             catch
             {
