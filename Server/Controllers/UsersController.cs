@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Dapper;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +27,12 @@ namespace AmnasKitchen.Server.Controllers
         {
             try
             {
-                using var connection = new SqlConnection(_configuration.GetConnectionString("DATABASE_URL"));
+#if DEBUG
+                var conn = _configuration.GetConnectionString("DATABASE_URL");
+#else
+                var conn = Environment.GetEnvironmentVariable("DATABASE_URL");
+#endif
+                using var connection = new SqlConnection(conn);
                 connection.Open();
 
                 return connection.QueryFirstOrDefault<string>(@"SELECT top 1 username FROM Tbl_Users");
