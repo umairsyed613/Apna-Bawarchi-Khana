@@ -1,6 +1,7 @@
-﻿@page "/users"
+﻿@page "/viewusers"
 @using AmnasKitchen.Shared
 @inject HttpClient Http
+
 
 <section id="userpage">
     <div class="container">
@@ -18,10 +19,10 @@
             <TelerikGrid Data="@AllUsers" Height="400px"
                          Pageable="true">
                 <GridColumns>
-                    <GridColumn Field="@(nameof(User.Id))" />
-                    <GridColumn Field="@(nameof(User.UserName))" Title="UserName" />
-                    <GridColumn Field="@(nameof(User.Password))" Title="Password" />
-                    <GridColumn Field="@(nameof(User.Email))" Title="Email" />
+                    <GridColumn Field="@(nameof(Users.Id))" />
+                    <GridColumn Field="@(nameof(Users.UserName))" Title="UserName" />
+                    <GridColumn Field="@(nameof(Users.Password))" Title="Password" />
+                    <GridColumn Field="@(nameof(Users.Email))" Title="Email" />
                 </GridColumns>
             </TelerikGrid>
         }
@@ -30,11 +31,11 @@
 
 
 @code {
-    User[] AllUsers;
+    Users[] AllUsers;
 
     protected override async Task OnInitializedAsync()
     {
-        AllUsers = await Http.GetFromJsonAsync<User[]>("Users/GetAllUsers");
+        AllUsers = await Http.GetFromJsonAsync<Users[]>("Users/GetAllUsers");
     }
 
 }

@@ -27,14 +27,14 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<Users>> GetAllUsers()
         {
             try
             {
                 using var connection = new SqlConnection(_databaseConnectionHandler.GetDbConnectionString());
                 connection.Open();
 
-                return await connection.QueryAsync<User>(@"SELECT * FROM Tbl_Users");
+                return await connection.QueryAsync<Users>(@"SELECT * FROM sa_amna.Users");
             }
             catch
             {

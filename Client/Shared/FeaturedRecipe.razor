@@ -1,0 +1,26 @@
+﻿<div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
+    <div class=" recipe-item card">
+        <a href="/viewrecipe/@Id">
+            <img src="images/bbq-pork-ribs.jpg" class="card-img-top" alt="Barbecue Ribs">
+        </a>
+        <div class="card-body">
+            <p class="card-text">
+                <div class="row">
+                    <div class="col-7">Barbecue Ribs</div>
+                    <div class="col-5">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </p>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+}

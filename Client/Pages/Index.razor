@@ -1,38 +1,19 @@
 ﻿@page "/"
 @inject HttpClient Http
+@using AmnasKitchen.Client.Shared;
 
 <NavMenu />
 <section id="items">
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h2>Most Viewed Recipes</h2>
+        <h2>Featured Recipes</h2>
       </div>
     </div>
     <div class="row">
       @for (int i = 0; i < 9; i++)
       {
-        <!-- First recipe item -->
-        <div class="col-lg-4 col-md-6 col-sm-12 wow fadeIn">
-          <div class=" recipe-item card">
-            <a href="/recipe">
-              <img src="images/bbq-pork-ribs.jpg" class="card-img-top" alt="Barbecue Ribs">
-            </a>
-            <div class="card-body">
-              <p class="card-text">
-                <div class="row">
-                  <div class="col-7">Barbecue Ribs</div>
-                  <div class="col-5">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </div>
-
-                </div>
-              </p>
-            </div>
-          </div>
-        </div>
+        <FeaturedRecipe Id="@i" />
       }
     </div>
   </div>
@@ -40,11 +21,4 @@
 
 
 @code {
-  string userName;
-
-  protected override async Task OnInitializedAsync()
-  {
-    userName = await Http.GetStringAsync("Users");
-  }
-
 }
