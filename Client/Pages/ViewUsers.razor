@@ -4,9 +4,8 @@
 
 
 <section id="userpage">
-    <div class="container">
 
-        <h1>All Users Info</h1>
+        <h2>All Users Info</h2>
 
         <p>This component demonstrates fetching data from the server.</p>
 
@@ -19,23 +18,22 @@
             <TelerikGrid Data="@AllUsers" Height="400px"
                          Pageable="true">
                 <GridColumns>
-                    <GridColumn Field="@(nameof(Users.Id))" />
-                    <GridColumn Field="@(nameof(Users.UserName))" Title="UserName" />
-                    <GridColumn Field="@(nameof(Users.Password))" Title="Password" />
-                    <GridColumn Field="@(nameof(Users.Email))" Title="Email" />
+                    <GridColumn Field="@(nameof(User.Id))" />
+                    <GridColumn Field="@(nameof(User.UserName))" Title="UserName" />
+                    <GridColumn Field="@(nameof(User.Password))" Title="Password" />
+                    <GridColumn Field="@(nameof(User.Email))" Title="Email" />
                 </GridColumns>
             </TelerikGrid>
         }
-    </div>
 </section>
 
 
 @code {
-    Users[] AllUsers;
+    User[] AllUsers;
 
     protected override async Task OnInitializedAsync()
     {
-        AllUsers = await Http.GetFromJsonAsync<Users[]>("Users/GetAllUsers");
+        AllUsers = await Http.GetFromJsonAsync<User[]>("api/Users/GetAllUsers");
     }
 
 }

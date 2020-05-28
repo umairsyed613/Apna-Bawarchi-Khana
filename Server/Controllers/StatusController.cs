@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AmnasKitchen.Server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class StatusController : ControllerBase
     {

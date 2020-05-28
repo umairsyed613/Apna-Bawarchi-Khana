@@ -29,6 +29,7 @@ namespace AmnasKitchen.Server
             services.AddRazorPages();
 
             services.AddSingleton<DatabaseConnectionHandler>();
+            services.AddSingleton<IRecipeService, RecipeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

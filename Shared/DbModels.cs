@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AmnasKitchen.Shared
 {
-    public partial class Categories
+    public partial class Category
     {
-        public Categories()
+        public Category()
         {
-            this.Recipes = new HashSet<Recipes>();
+            this.Recipes = new HashSet<Recipe>();
         }
 
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public ICollection<Recipes> Recipes { get; set; }
+        public ICollection<Recipe> Recipes { get; set; }
     }
 
-    public partial class Directions
+    public partial class Direction
     {
         public int Id { get; set; }
 
@@ -28,10 +26,10 @@ namespace AmnasKitchen.Shared
 
         public string Step { get; set; }
 
-        public Recipes Recipe { get; set; }
+        public Recipe Recipe { get; set; }
     }
 
-    public partial class Ingredients
+    public partial class Ingredient
     {
         public int Id { get; set; }
 
@@ -43,15 +41,15 @@ namespace AmnasKitchen.Shared
 
         public string Description { get; set; }
 
-        public Recipes Recipe { get; set; }
+        public Recipe Recipe { get; set; }
     }
 
-    public partial class Recipes
+    public partial class Recipe
     {
-        public Recipes()
+        public Recipe()
         {
-            this.Directions = new HashSet<Directions>();
-            this.Ingredients = new HashSet<Ingredients>();
+            this.Directions = new HashSet<Direction>();
+            this.Ingredients = new HashSet<Ingredient>();
         }
 
         public int Id { get; set; }
@@ -66,14 +64,14 @@ namespace AmnasKitchen.Shared
 
         public int Serving { get; set; }
 
-        public Categories Category { get; set; }
+        public Category Category { get; set; }
 
-        public ICollection<Directions> Directions { get; set; }
+        public ICollection<Direction> Directions { get; set; }
 
-        public ICollection<Ingredients> Ingredients { get; set; }
+        public ICollection<Ingredient> Ingredients { get; set; }
     }
 
-    public partial class Users
+    public partial class User
     {
         public int Id { get; set; }
 
