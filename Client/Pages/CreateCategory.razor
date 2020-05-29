@@ -1,6 +1,7 @@
 ﻿@page "/createcategory"
 @using AmnasKitchen.Shared
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <section>
 
@@ -11,19 +12,35 @@
         <TelerikTextBox @bind-Value="categoryName" Label="Enter Category Name" Width="100%"></TelerikTextBox>
         <small id="emailHelp" class="form-text text-muted">Please make sure the category is not created before.</small>
     </div>
+
+    <div class="form-group w-100">
+
+        <TelerikUpload SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl"
+                       AllowedExtensions="@( new List<string>() { ".jpg", ".png", ".jpeg" } )"
+                       MaxFileSize="2048000" MinFileSize="1024" />
+    </div>
+
     <div class="row pb-5">
         <div class="col-12">
             <TelerikButton ButtonType="@ButtonType.Submit" OnClick="@OnClickHandler" Primary="true" Class="w-100">Create</TelerikButton>
         </div>
     </div>
-
 </section>
 
 @code {
     string categoryName { get; set; }
+    public string SaveUrl => ToAbsoluteUrl("api/upload/save");
+    public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
+
+
+    public string ToAbsoluteUrl(string url)
+    {
+        return $"{NavigationManager.BaseUri}{url}";
+    }
 
     async Task OnClickHandler()
     {
-        await Http.PostAsJsonAsync("Recipe/CreateCategory",  new Category { Name = categoryName });
+        await Http.PostAsJsonAsync("api/Recipe/CreateCategory",  new Category { Name = categoryName });
     }
+
 }

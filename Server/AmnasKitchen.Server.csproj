@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Shared\AmnasKitchen.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="images\upload\" />
+  </ItemGroup>
+
 </Project>

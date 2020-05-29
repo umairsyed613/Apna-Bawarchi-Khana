@@ -30,6 +30,7 @@ namespace AmnasKitchen.Server
 
             services.AddSingleton<DatabaseConnectionHandler>();
             services.AddSingleton<IRecipeService, RecipeService>();
+            services.AddSingleton<IPathProvider, PathProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

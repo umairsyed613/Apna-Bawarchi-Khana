@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AmnasKitchen.Shared
 {
@@ -12,6 +13,10 @@ namespace AmnasKitchen.Shared
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string ImageUrl { get; set; }
 
         public ICollection<Recipe> Recipes { get; set; }
     }
@@ -63,6 +68,14 @@ namespace AmnasKitchen.Shared
         public int Difficulty { get; set; }
 
         public int Serving { get; set; }
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
 
         public Category Category { get; set; }
 

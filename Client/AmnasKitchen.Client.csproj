@@ -53,5 +53,8 @@
       <HintPath>..\telerik\Telerik.Zip.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\images\upload\" />
+  </ItemGroup>
   
 </Project>

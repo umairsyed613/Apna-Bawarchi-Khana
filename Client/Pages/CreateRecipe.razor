@@ -1,21 +1,108 @@
 ﻿@page "/createrecipe"
-@using AmnasKitchen.Shared
-@inject HttpClient Http
+@using System.ComponentModel.DataAnnotations
+<EditForm Model="@person" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    @*<ValidationSummary />*@
 
-<section id="userpage">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1>CreateRecipe</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            
-        </div>
+    <div class="form-group">
+        <label for="nameTextbox">Name:</label>
+        <TelerikTextBox @bind-Value="@person.Name" Id="nameTextbox"></TelerikTextBox>
+        <ValidationMessage For="@(() => person.Name)"></ValidationMessage>
     </div>
 
-    </section>
+    <div class="form-group">
+        <label for="roleAutoComplete">Role:</label>
+        <TelerikAutoComplete Data="@RoleSuggestions" @bind-Value="@person.Role" Id="roleAutoComplete"
+                             Placeholder="Enter your role (can be free text)" ClearButton="true" />
+        <ValidationMessage For="@(() => person.Role)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="heightNumeric">Height (cm):</label>
+        <TelerikNumericTextBox @bind-Value="@person.Height" Id="heightNumeric" />
+        <ValidationMessage For="@(() => person.Height)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="birthdayDateInput">Birthday:</label>
+        <TelerikDateInput @bind-Value="@person.Birthday" Format="dd MMMM yyyy" Id="birthdayDateInput"></TelerikDateInput>
+        <ValidationMessage For="@(() => person.Birthday)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="favDayDatePicker">Favorite date:</label>
+        <TelerikDatePicker @bind-Value="@person.FavoriteDay" Format="dd MMMM yyyy" Id="favDayDatePicker"></TelerikDatePicker>
+        <ValidationMessage For="@(() => person.FavoriteDay)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="scrumTimePicker">Daily scrum:</label>
+        <TelerikTimePicker @bind-Value="@person.DailyScrum" Id="scrumTimePicker"></TelerikTimePicker>
+        <ValidationMessage For="@(() => person.DailyScrum)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="dayStartDateTimePicker">Start time:</label>
+        <TelerikDateTimePicker Format="G" @bind-Value="@person.StartTime" Width="250px" Id="dayStartDateTimePicker"></TelerikDateTimePicker>
+        <ValidationMessage For="@(() => person.StartTime)"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label class="k-checkbox-label" for="acceptTermsCheckbox">Accepts terms</label>
+        <TelerikCheckBox @bind-Value="@person.AcceptsTerms" Id="acceptTermsCheckbox"></TelerikCheckBox>
+        <ValidationMessage For="@(() => person.AcceptsTerms)"></ValidationMessage>
+    </div>
 
+    <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
+</EditForm>
 @code {
+    // Usually this class would be in a different file
+    public class Person
+    {
+        [Required(ErrorMessage = "Enter a name")]
+        [StringLength(10, ErrorMessage = "That name is too long")]
+        public string Name { get; set; }
 
+        [Required]
+        [StringLength(15, ErrorMessage = "That role name is too long, use abbreviations")]
+        public string Role { get; set; }
+
+        [Required(ErrorMessage = "Provide your height in centimeters")]
+        [Range(1, 300, ErrorMessage = "Nobody is that tall")]
+        public int? Height { get; set; }
+
+        [Required]
+        [Range(typeof(DateTime), "1/1/1900", "1/12/2000",
+            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy} and {2:dd MMM yyyy}")]
+        public DateTime Birthday { get; set; }
+
+        [Required]
+        [Range(typeof(DateTime), "1/1/1999", "1/12/2019",
+            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy} and {2:dd MMM yyyy}")]
+        [Display(Name = "Your Favourite Day")]
+        public DateTime FavoriteDay { get; set; }
+
+        [Required(ErrorMessage = "The daily standup is required")]
+        [Range(typeof(DateTime), "1/1/1900 08:00:00", "1/1/1900 17:00:00",
+            ErrorMessage = "Time should be in business hours, between 8AM and 5 PM.")]
+        public DateTime? DailyScrum { get; set; }
+
+        [Required(ErrorMessage = "Enter a starting time")]
+        [Range(typeof(DateTime), "29/11/2018 10:00:00", "22/12/2025 17:00:00",
+            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy HH:mm} and {2:dd MMM yyyy HH:mm}")]
+        public DateTime StartTime { get; set; }
+
+        [Required]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Must accept terms")]
+        public bool AcceptsTerms { get; set; }
+    }
+
+    Person person = new Person()
+    {
+        // for time pickers, the initial date value must match the date portion of the range validation rule
+        DailyScrum = new DateTime(1900, 1, 1, 1, 1, 1),
+    };
+
+    void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
+
+    List<string> RoleSuggestions { get; set; } = new List<string> {
+        "Manager", "Developer", "QA", "Technical Writer", "Support Engineer", "Sales Agent", "Architect", "Designer"
+    };
 }
