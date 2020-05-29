@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Http;
@@ -45,11 +47,11 @@ namespace AmnasKitchen.Server.Controllers
                         }
                     }
                 }
-                catch
+                catch(Exception ee)
                 {
                     // implement error handling here, this merely indicates a failure to the upload
                     Response.StatusCode = 500;
-                    await Response.WriteAsync("some error message"); // custom error message
+                    await Response.WriteAsync(ee.Message); // custom error message
                 }
             }
 
@@ -80,11 +82,11 @@ namespace AmnasKitchen.Server.Controllers
                         }
                     }
                 }
-                catch
+                catch(Exception ee)
                 {
                     // implement error handling here, this merely indicates a failure to the upload
                     Response.StatusCode = 500;
-                    Response.WriteAsync("some error message"); // custom error message
+                    Response.WriteAsync(ee.Message); // custom error message
                 }
             }
 
