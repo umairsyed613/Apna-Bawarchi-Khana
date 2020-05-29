@@ -1,13 +1,13 @@
 ﻿using System;
-
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 using AmnasKitchen.Server.Services;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AmnasKitchen.Server.Controllers
 {
@@ -22,67 +22,42 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(IEnumerable<IFormFile> files) // the default field name. See SaveField
+        public async Task Save(IEnumerable<IFormFile> files, string path)
         {
-            if (files != null)
+            // the default field name. See SaveField
+            if (files != null && !string.IsNullOrEmpty(path))
             {
-                try
+                foreach (var file in files)
                 {
-                    foreach (var file in files)
-                    {
-                        var fileContent = ContentDispositionHeaderValue.Parse(file.ContentDisposition);
-
-                        // Some browsers send file names with full path.
-                        // We are only interested in the file name.
-                        var fileName = Path.GetFileName(fileContent.FileName.ToString().Trim('"'));
-                        var physicalPath = Path.Combine(_pathProvider.MapPath("images\\upload"), fileName);
-
-                        // Implement security mechanisms here - prevent path traversals,
-                        // check for allowed extensions, types, size, content, viruses, etc.
-                        // this sample always saves the file to the root and is not sufficient for a real application
-
-                        using (var fileStream = new FileStream(physicalPath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-                    }
-                }
-                catch(Exception ee)
-                {
-                    // implement error handling here, this merely indicates a failure to the upload
-                    Response.StatusCode = 500;
-                    await Response.WriteAsync(ee.Message); // custom error message
+                    var fileContent = ContentDispositionHeaderValue.Parse(file.ContentDisposition);
+                    var fileName = Path.GetFileName(fileContent.FileName.ToString().Trim('"'));
+                    var physicalPath = Path.Combine(_pathProvider.MapPath(path), fileName);
+                    await using var fileStream = new FileStream(physicalPath, FileMode.Create);
+                    await file.CopyToAsync(fileStream);
                 }
             }
-
-            // Return an empty string message in this case
-            return new EmptyResult();
         }
 
-
         [HttpPost]
-        public ActionResult Remove(string[] files) // the default field name. See RemoveField
+        public ActionResult Remove(string[] files, string path)
         {
-            if (files != null)
+            // the default field name. See RemoveField
+            if (files != null && !string.IsNullOrEmpty(path))
             {
                 try
                 {
                     foreach (var fullName in files)
                     {
                         var fileName = Path.GetFileName(fullName);
-                        var physicalPath = Path.Combine(_pathProvider.MapPath("images\\upload"), fileName);
+                        var physicalPath = Path.Combine(_pathProvider.MapPath(path), fileName);
 
                         if (System.IO.File.Exists(physicalPath))
                         {
-                            // Implement security mechanisms here - prevent path traversals,
-                            // check for allowed extensions, types, permissions, etc.
-                            // this sample always deletes the file from the root and is not sufficient for a real application
-
                             System.IO.File.Delete(physicalPath);
                         }
                     }
                 }
-                catch(Exception ee)
+                catch (Exception ee)
                 {
                     // implement error handling here, this merely indicates a failure to the upload
                     Response.StatusCode = 500;

@@ -21,6 +21,7 @@ namespace AmnasKitchen.Server
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseWebRoot("wwwroot");
                     webBuilder.UseStaticWebAssets();
                 });
     }
