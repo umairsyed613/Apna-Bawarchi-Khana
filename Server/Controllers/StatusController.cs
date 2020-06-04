@@ -51,7 +51,7 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<string> GetRootPath()
+        public string GetRootPath()
         {
             try
             {
