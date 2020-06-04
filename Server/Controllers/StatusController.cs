@@ -19,10 +19,12 @@ namespace AmnasKitchen.Server.Controllers
     public class StatusController : ControllerBase
     {
         private readonly DatabaseConnectionHandler _databaseConnectionHandler;
+        private readonly IPathProvider _pathProvider;
 
-        public StatusController(DatabaseConnectionHandler connectionHandler)
+        public StatusController(DatabaseConnectionHandler connectionHandler, IPathProvider pathProvider)
         {
             _databaseConnectionHandler = connectionHandler ?? throw new ArgumentNullException(nameof(connectionHandler));
+            _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         }
 
         [HttpGet("[action]")]
@@ -45,6 +47,19 @@ namespace AmnasKitchen.Server.Controllers
             catch
             {
                 return "No Connection to Database";
+            }
+        }
+
+        [HttpGet("[action]")]
+        public async Task<string> GetRootPath()
+        {
+            try
+            {
+                return _pathProvider.GetRootPath();
+            }
+            catch
+            {
+                return "Failed to get Root Path";
             }
         }
     }
