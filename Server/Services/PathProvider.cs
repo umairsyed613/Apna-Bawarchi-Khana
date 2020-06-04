@@ -27,6 +27,16 @@ namespace AmnasKitchen.Server.Services
 
         public string MapPath(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            if (path.StartsWith("\\") || path.StartsWith("/"))
+            {
+                path = path.Substring(1, path.Length - 1);
+            }
+
             var rootPath = GetRootPath();
             var filePath = Path.Combine(rootPath, path);
 

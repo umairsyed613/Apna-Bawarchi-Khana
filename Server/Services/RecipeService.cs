@@ -34,6 +34,14 @@ namespace AmnasKitchen.Server.Services
             return await connection.QueryAsync<Recipe>("Select * from sa_amna.Recipe where CategoryId = " + categoryId);
         }
 
+        public async Task<IEnumerable<Category>> GetAllCategories()
+        {
+            using var connection = _databaseConnectionHandler.GetDbConnection();
+            connection.Open();
+
+            return await connection.QueryAsync<Category>("Select * from sa_amna.Categories");
+        }
+
         public async Task CreateRecipe(Recipe recipe)
         {
             if (recipe == null)
@@ -59,9 +67,19 @@ namespace AmnasKitchen.Server.Services
             using var connection = _databaseConnectionHandler.GetDbConnection();
             connection.Open();
 
-            var sql = "INSERT INTO sa_amna.Categories (Name) VALUES(@name)";
+            var sql = "INSERT INTO sa_amna.Categories (Name, Description, ImageUrl) VALUES(@name, @description, @imageUrl)";
 
-            await connection.ExecuteAsync(sql, new { category.Name });
+            await connection.ExecuteAsync(sql, new { category.Name, category.Description , category.ImageUrl });
+        }
+
+        public async Task DeleteCategory(int categoryId)
+        {
+            using var connection = _databaseConnectionHandler.GetDbConnection();
+            connection.Open();
+
+            var sql = "Delete from sa_amna.Categories Where Id = @id";
+
+            await connection.ExecuteAsync(sql, new { id = categoryId });
         }
     }
 }

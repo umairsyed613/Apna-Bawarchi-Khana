@@ -16,7 +16,7 @@
 */
 
 body {
-  background-color: #a44c9f;
+  /*background-color: #a44c9f;*/
   color: #666;
   font-size: 16px;
   font-family: 'Montserrat', sans-serif;
@@ -96,8 +96,7 @@ table {
 
 #categories {
   background-color: #f9f9f9;
-  padding-top: 12px;
-  padding-bottom: 24px;
+  padding: 12px 5px 24px 5px;
 }
 #categories h2 {
   color: #333;
@@ -334,6 +333,7 @@ footer {
 
 .sectionBg {
   background-color: #f1f1f1 !important;
+  padding-top: 10px !important;
 }
 
 h2 {

@@ -1,46 +1,161 @@
-﻿@page "/createcategory"
+﻿@page "/managecategory/createcategory"
+
 @using AmnasKitchen.Shared
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
 
-<section>
+<style>
+    .validation-errors {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        position: relative;
+        padding: .75rem 1.25rem .75rem 2rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: .25rem;
+    }
+</style>
+<TelerikWindow Modal="true" Visible=@WindowVisible Centered="true">
+    <WindowTitle>
+        <strong>Create Category</strong>
+    </WindowTitle>
+    <WindowContent>
+        <section>
+            @if (string.IsNullOrEmpty(SuccessMessage))
+            {
+                <EditForm EditContext="@MyEditContext" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+                    <DataAnnotationsValidator />
 
-    <h2>Create New Category</h2>
-    <hr/>
+                    <div class="form-group w-100">
+                        <TelerikTextBox @bind-Value="categoryForm.Name" Label="Enter Category Name" Width="100%"></TelerikTextBox>
+                        <small id="catHelp" class="form-text text-muted">Please make sure the category is not created before.</small>
+                    </div>
 
-    <div class="form-group w-100">
-        <TelerikTextBox @bind-Value="categoryName" Label="Enter Category Name" Width="100%"></TelerikTextBox>
-        <small id="emailHelp" class="form-text text-muted">Please make sure the category is not created before.</small>
-    </div>
+                    <div class="form-group w-100">
+                        <textarea rows="5" class="form-control w-100" placeholder="Enter Category Description" @bind="categoryForm.Description" />
+                    </div>
 
-    <div class="form-group w-100">
+                    <div class="form-group w-100">
 
-        <TelerikUpload SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl"
-                       AllowedExtensions="@( new List<string>() { ".jpg", ".png", ".jpeg" } )"
-                       MaxFileSize="2048000" MinFileSize="1024" />
-    </div>
+                        <TelerikUpload @ref="@UploadRef" Multiple="false" SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl" OnUpload="@OnUploadOrRemoveHandler" OnRemove="@OnUploadOrRemoveHandler"
+                                       OnSuccess="@OnSuccessHandler"
+                                       AllowedExtensions="@( new List<string>() { ".jpg", ".png", ".jpeg" } )"
+                                       MaxFileSize="10000" MinFileSize="1000" />
+                    </div>
 
-    <div class="row pb-5">
-        <div class="col-12">
-            <TelerikButton ButtonType="@ButtonType.Submit" OnClick="@OnClickHandler" Primary="true" Class="w-100">Create</TelerikButton>
-        </div>
-    </div>
-</section>
+
+                    <div class="mt-4">
+                        <ValidationSummary />
+                    </div>
+
+                    <div class="row pb-5">
+                        <div class="col-12">
+                            <TelerikButton ButtonType="@ButtonType.Submit" Primary="true" Class="w-100">Create</TelerikButton>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+            else
+            {
+                <div class="alert alert-success" role="alert">
+                    @SuccessMessage
+                    <br />
+                    <TelerikButton Primary="true" OnClick="@BackToCategoryManagement">Go back</TelerikButton>
+                </div>
+            }
+
+        </section>
+
+    </WindowContent>
+    <WindowActions>
+        <WindowAction Name="Maximize"></WindowAction>
+        <WindowAction Name="Custom" Icon="@IconName.Close" OnClick="@BackToCategoryManagement"></WindowAction>
+    </WindowActions>
+</TelerikWindow>
 
 @code {
-    string categoryName { get; set; }
+    bool WindowVisible = true;
     public string SaveUrl => ToAbsoluteUrl("api/upload/save");
     public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
 
+    private static readonly string pathToIcons = "\\images\\caticons\\";
+
+    Telerik.Blazor.Components.TelerikUpload UploadRef { get; set; }
+
+    protected EditContext MyEditContext { get; set; }
+
+    CategoryForm categoryForm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        categoryForm = new CategoryForm();
+        MyEditContext = new EditContext(categoryForm);
+    }
 
     public string ToAbsoluteUrl(string url)
     {
         return $"{NavigationManager.BaseUri}{url}";
     }
 
-    async Task OnClickHandler()
+    string SuccessMessage = string.Empty;
+
+    async Task HandleValidSubmit()
     {
-        await Http.PostAsJsonAsync("api/Recipe/CreateCategory",  new Category { Name = categoryName });
+        var response = await Http.PostAsJsonAsync("api/Recipe/CreateCategory", new Category
+        {
+            Name = categoryForm.Name,
+            Description = categoryForm.Description,
+            ImageUrl = categoryForm.IconPath
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            await this.OnInitializedAsync();
+        }
+
+        SuccessMessage = "Category Created Successfully! We will get back to you.";
     }
 
+    void HandleInvalidSubmit()
+    {
+        SuccessMessage = "";
+    }
+
+    async Task BackToCategoryManagement()
+    {
+        NavigationManager.NavigateTo("/managecategory");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    async Task OnUploadOrRemoveHandler(UploadEventArgs e)
+    {
+        e.RequestData.Add("path", pathToIcons);
+    }
+
+    async Task OnSuccessHandler(UploadSuccessEventArgs e)
+    {
+        var actionText = e.Operation == UploadOperationType.Upload ? "uploaded" : "removed";
+
+        foreach (var file in e.Files)
+        {
+            categoryForm.IconPath = pathToIcons + file.Name;
+        }
+    }
+
+
+    public class CategoryForm
+    {
+        [Required(ErrorMessage = "Enter Category Name")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Enter Category Description")]
+        public string Description { get; set; }
+
+
+        [Required(ErrorMessage = "Enter Category Icon is missing")]
+        public string IconPath { get; set; }
+    }
 }

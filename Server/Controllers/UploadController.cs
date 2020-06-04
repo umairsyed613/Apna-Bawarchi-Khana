@@ -22,10 +22,14 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpPost]
-        public async Task Save(IEnumerable<IFormFile> files, string path)
+        public async Task Save(string path, IEnumerable<IFormFile> files)
         {
             // the default field name. See SaveField
-            if (files != null && !string.IsNullOrEmpty(path))
+            if (files == null || string.IsNullOrEmpty(path))
+            {
+                throw new InvalidOperationException("Missing Parameter values on saving file.");
+            }
+            else
             {
                 foreach (var file in files)
                 {
@@ -39,34 +43,51 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult Remove(string[] files, string path)
+        public Task Remove(string path, string[] files)
         {
-            // the default field name. See RemoveField
-            if (files != null && !string.IsNullOrEmpty(path))
+            if (files == null || string.IsNullOrEmpty(path))
             {
-                try
+                throw new InvalidOperationException("Missing Parameter values on removing file.");
+            }
+            else
+            {
+                foreach (var fullName in files)
                 {
-                    foreach (var fullName in files)
-                    {
-                        var fileName = Path.GetFileName(fullName);
-                        var physicalPath = Path.Combine(_pathProvider.MapPath(path), fileName);
+                    var fileName = Path.GetFileName(fullName);
+                    var physicalPath = Path.Combine(_pathProvider.MapPath(path), fileName);
 
-                        if (System.IO.File.Exists(physicalPath))
-                        {
-                            System.IO.File.Delete(physicalPath);
-                        }
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        System.IO.File.Delete(physicalPath);
                     }
                 }
-                catch (Exception ee)
-                {
-                    // implement error handling here, this merely indicates a failure to the upload
-                    Response.StatusCode = 500;
-                    Response.WriteAsync(ee.Message); // custom error message
-                }
-            }
 
-            // Return an empty string message in this case
-            return new EmptyResult();
+                return Task.CompletedTask;
+            }
+        }
+        
+        [HttpPost]
+        public Task RemoveByPath([FromBody] string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new InvalidOperationException("Missing Parameter values on removing file.");
+            }
+            else
+            {
+                var fullPath = _pathProvider.MapPath(path);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+                else
+                {
+                    throw new FileNotFoundException("File cannot be deleted.", path);
+                }
+
+                return Task.CompletedTask;
+            }
         }
     }
 }

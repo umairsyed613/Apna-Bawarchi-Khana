@@ -13,8 +13,12 @@ namespace AmnasKitchen.Server.Services
 
         Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId);
 
+        Task<IEnumerable<Category>> GetAllCategories();
+
         Task CreateRecipe(Recipe Recipe);
 
         Task CreateCategory(Category category);
+
+        Task DeleteCategory(int categoryId);
     }
 }

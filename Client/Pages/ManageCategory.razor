@@ -1,0 +1,110 @@
+﻿@page "/managecategory"
+
+
+@using AmnasKitchen.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsInterop
+@using System.ComponentModel.DataAnnotations
+
+<style>
+    .catIconGrid {
+        width: 48px !important;
+        height: 48px !important;
+    }
+</style>
+
+@*<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ManageCategory</li>
+    </ol>
+</nav>*@
+
+<section>
+    <h2>Manage Categories</h2>
+    <hr />
+</section>
+
+<section>
+    <div class="row pb-5">
+        <div class="col-12">
+            <TelerikButton ButtonType="@ButtonType.Submit" OnClick="@MyClickHandler" Primary="false" Class="w-100">Create New Category</TelerikButton>
+        </div>
+    </div>
+
+    <div class="row pb-5">
+        <div class="col-12">
+            @if (categories == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <TelerikGrid Data="@categories" Height="400px" OnDelete="@DeleteHandler"
+                             Pageable="true">
+                    <GridColumns>
+                        <GridColumn Field="@(nameof(Category.Id))" Width="70px" />
+                        <GridColumn Field="@(nameof(Category.Name))" Title="Name" />
+                        <GridColumn Field="@(nameof(Category.Description))" Title="Description" />
+                        <GridColumn Field="@(nameof(Category.ImageUrl))" Title="Icon" Width="90px">
+                            <Template>
+                                @{
+                                    var cat = context as Category;
+                                }
+                                @if (cat?.ImageUrl != null)
+                                {
+                                    <div class="category-item text-center">
+                                        <img src="@($"{cat.ImageUrl}")" alt="@($"{cat.Name}")" class="catIconGrid" />
+                                    </div>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridCommandColumn Width="70px">
+                            <GridCommandButton Command="Delete" Icon="delete"></GridCommandButton>
+                        </GridCommandColumn>
+                    </GridColumns>
+                </TelerikGrid>
+            }
+
+        </div>
+    </div>
+</section>
+
+@code {
+    IList<Category> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+    }
+
+    public async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        var category = (Category)args.Item;
+
+        if (category.ImageUrl != null)
+        {
+            var response = await Http.PostAsJsonAsync("api/upload/RemoveByPath", category.ImageUrl);
+
+            if (response.IsSuccessStatusCode || (await response.Content.ReadAsStringAsync()).Contains("File cannot be deleted"))
+            {
+                await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
+                categories.Remove(category);
+
+            }
+        }
+        else
+        {
+            await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
+            categories.Remove(category);
+        }
+    }
+
+    protected void MyClickHandler()
+    {
+        NavigationManager.NavigateTo("/managecategory/createcategory");
+    }
+
+}

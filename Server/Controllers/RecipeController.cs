@@ -20,10 +20,22 @@ namespace AmnasKitchen.Server.Controllers
             _recipeService = recipeService?? throw new ArgumentNullException(nameof(recipeService));
         }
 
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<Category>> GetAllCategories()
+        {
+            return await _recipeService.GetAllCategories();
+        }
+
         [HttpPost("[action]")]
         public async Task CreateCategory([FromBody] Category category)
         {
             await _recipeService.CreateCategory(category);
+        }
+        
+        [HttpDelete("[action]/{categoryId}")]
+        public async Task DeleteCategory(int categoryId)
+        {
+            await _recipeService.DeleteCategory(categoryId);
         }
 
         [HttpPost("[action]")]
