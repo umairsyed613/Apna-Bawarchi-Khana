@@ -1,108 +1,94 @@
 ﻿@page "/createrecipe"
+
+@inject HttpClient Http
 @using System.ComponentModel.DataAnnotations
-<EditForm Model="@person" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    @*<ValidationSummary />*@
+@using AmnasKitchen.Shared
 
-    <div class="form-group">
-        <label for="nameTextbox">Name:</label>
-        <TelerikTextBox @bind-Value="@person.Name" Id="nameTextbox"></TelerikTextBox>
-        <ValidationMessage For="@(() => person.Name)"></ValidationMessage>
-    </div>
+<div class="container">
+    <EditForm EditContext="@MyEditContext" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <label for="roleAutoComplete">Role:</label>
-        <TelerikAutoComplete Data="@RoleSuggestions" @bind-Value="@person.Role" Id="roleAutoComplete"
-                             Placeholder="Enter your role (can be free text)" ClearButton="true" />
-        <ValidationMessage For="@(() => person.Role)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label for="heightNumeric">Height (cm):</label>
-        <TelerikNumericTextBox @bind-Value="@person.Height" Id="heightNumeric" />
-        <ValidationMessage For="@(() => person.Height)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label for="birthdayDateInput">Birthday:</label>
-        <TelerikDateInput @bind-Value="@person.Birthday" Format="dd MMMM yyyy" Id="birthdayDateInput"></TelerikDateInput>
-        <ValidationMessage For="@(() => person.Birthday)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label for="favDayDatePicker">Favorite date:</label>
-        <TelerikDatePicker @bind-Value="@person.FavoriteDay" Format="dd MMMM yyyy" Id="favDayDatePicker"></TelerikDatePicker>
-        <ValidationMessage For="@(() => person.FavoriteDay)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label for="scrumTimePicker">Daily scrum:</label>
-        <TelerikTimePicker @bind-Value="@person.DailyScrum" Id="scrumTimePicker"></TelerikTimePicker>
-        <ValidationMessage For="@(() => person.DailyScrum)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label for="dayStartDateTimePicker">Start time:</label>
-        <TelerikDateTimePicker Format="G" @bind-Value="@person.StartTime" Width="250px" Id="dayStartDateTimePicker"></TelerikDateTimePicker>
-        <ValidationMessage For="@(() => person.StartTime)"></ValidationMessage>
-    </div>
-    <div class="form-group">
-        <label class="k-checkbox-label" for="acceptTermsCheckbox">Accepts terms</label>
-        <TelerikCheckBox @bind-Value="@person.AcceptsTerms" Id="acceptTermsCheckbox"></TelerikCheckBox>
-        <ValidationMessage For="@(() => person.AcceptsTerms)"></ValidationMessage>
-    </div>
+        <div class="form-group w-100">
+            <TelerikTextBox @bind-Value="@recipeForm.Title" Label="Enter Recipe Title" Width="100%"></TelerikTextBox>
+        </div>
 
-    <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
-</EditForm>
+        <div class="form-group w-100">
+            <TelerikDropDownList Data="@categories" TextField="Name" ValueField="Id" @bind-Value="@recipeForm.CategoryId" DefaultText="Choose Category" Width="100%">
+            </TelerikDropDownList>
+        </div>
+
+        <div class="form-group w-100">
+            <label for="Recipe-Time">Time to prepare</label>
+            <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time" Class="form-control" Width="100%"></TelerikNumericTextBox>
+        </div>
+
+        <div class="form-group w-100">
+            <label for="MealDifficulty">Difficulty level</label>
+            <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" class="form-control" id="MealDifficulty">
+            @for (int i = 0; i < recipeForm.Difficulty; i++)
+            {
+                <i class="fa fa-fire" aria-hidden="true"></i>
+            }
+        </div>
+
+        <div class="form-group w-100">
+            <textarea rows="5" class="form-control w-100" placeholder="Enter Recipe Description" @bind="recipeForm.Description" />
+                      </div>
+
+        <div class="mt-4">
+            <ValidationSummary />
+        </div>
+
+        <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
+    </EditForm>
+
+</div>
 @code {
-    // Usually this class would be in a different file
-    public class Person
+    protected EditContext MyEditContext { get; set; }
+
+    RecipeForm recipeForm { get; set; }
+
+    IList<Category> categories;
+
+    protected override async Task OnInitializedAsync()
     {
-        [Required(ErrorMessage = "Enter a name")]
-        [StringLength(10, ErrorMessage = "That name is too long")]
-        public string Name { get; set; }
-
-        [Required]
-        [StringLength(15, ErrorMessage = "That role name is too long, use abbreviations")]
-        public string Role { get; set; }
-
-        [Required(ErrorMessage = "Provide your height in centimeters")]
-        [Range(1, 300, ErrorMessage = "Nobody is that tall")]
-        public int? Height { get; set; }
-
-        [Required]
-        [Range(typeof(DateTime), "1/1/1900", "1/12/2000",
-            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy} and {2:dd MMM yyyy}")]
-        public DateTime Birthday { get; set; }
-
-        [Required]
-        [Range(typeof(DateTime), "1/1/1999", "1/12/2019",
-            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy} and {2:dd MMM yyyy}")]
-        [Display(Name = "Your Favourite Day")]
-        public DateTime FavoriteDay { get; set; }
-
-        [Required(ErrorMessage = "The daily standup is required")]
-        [Range(typeof(DateTime), "1/1/1900 08:00:00", "1/1/1900 17:00:00",
-            ErrorMessage = "Time should be in business hours, between 8AM and 5 PM.")]
-        public DateTime? DailyScrum { get; set; }
-
-        [Required(ErrorMessage = "Enter a starting time")]
-        [Range(typeof(DateTime), "29/11/2018 10:00:00", "22/12/2025 17:00:00",
-            ErrorMessage = "Value for {0} must be between {1:dd MMM yyyy HH:mm} and {2:dd MMM yyyy HH:mm}")]
-        public DateTime StartTime { get; set; }
-
-        [Required]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Must accept terms")]
-        public bool AcceptsTerms { get; set; }
+        recipeForm = new RecipeForm();
+        MyEditContext = new EditContext(recipeForm);
+        categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
     }
-
-    Person person = new Person()
-    {
-        // for time pickers, the initial date value must match the date portion of the range validation rule
-        DailyScrum = new DateTime(1900, 1, 1, 1, 1, 1),
-    };
 
     void HandleValidSubmit()
     {
         Console.WriteLine("OnValidSubmit");
     }
 
-    List<string> RoleSuggestions { get; set; } = new List<string> {
-        "Manager", "Developer", "QA", "Technical Writer", "Support Engineer", "Sales Agent", "Architect", "Designer"
-    };
+}
+
+@code
+{
+
+    class RecipeForm
+    {
+        public int CategoryId { get; set; }
+
+        [Required(ErrorMessage = "Enter a Time")]
+        [Range(1, 60)]
+        public int Time { get; set; }
+
+        [Required(ErrorMessage = "Enter a TimeUnit")]
+        public string TimeUnit { get; set; } = "H";
+
+        [Required(ErrorMessage = "Enter difficulty level")]
+        [Range(1, 5)]
+        public int Difficulty { get; set; }
+
+        [Required(ErrorMessage = "Enter servings")]
+        public int Serving { get; set; }
+
+        [Required(ErrorMessage = "Enter a Recipe Title")]
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+    }
+
 }

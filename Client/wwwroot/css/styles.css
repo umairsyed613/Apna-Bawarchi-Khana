@@ -61,31 +61,25 @@ table {
   z-index: 42;
 }
 
-/*
-** Website Logo
-** -----------------------------------------------------------------------------
-*/
+
+.bg-ak {
+  background-color: #a44c9f !important;
+}
 
 #logo {
   width: 100%;
-  min-height: 250px;
   margin-left: auto;
   margin-right: auto;
-  background-size: cover;
+
+  /*background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: radial-gradient(rgba(126, 0, 119, 0.15), rgba(126, 0, 119, 0.75)), url("../images/AmnasKitchenBanner.jpg");
-}
-#logo img {
-  height: 100px;
-  width: auto;
-  margin-top: 24px;
+  background-image: radial-gradient(rgba(126, 0, 119, 0.15), rgba(126, 0, 119, 0.75)), url("../images/AmnasKitchenBanner.jpg");*/
 }
 #logo h1 {
   font-family: 'Quirlycues';
-  font-size: 72px;
+  font-size: 24px;
   font-weight: normal;
-  padding-top: 24px;
   color: #f9f9f9;
 }
 
@@ -310,8 +304,6 @@ table {
 footer {
   background-color: #a44c9f;
   color: #f9f9f9;
-  margin-bottom: 24px;
-  margin-top: 24px;
 }
 .footer-about {
   margin-bottom: 24px;
@@ -334,10 +326,27 @@ footer {
 .sectionBg {
   background-color: #f1f1f1 !important;
   padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 h2 {
     color: #333;
     font-family: 'Dancing Script', cursive;
     font-size: 2em;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.validation-errors {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  position: relative;
+  padding: .75rem 1.25rem .75rem 2rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
 }

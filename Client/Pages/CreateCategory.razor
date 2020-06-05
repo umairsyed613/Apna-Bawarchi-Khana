@@ -5,18 +5,6 @@
 @inject NavigationManager NavigationManager
 @using System.ComponentModel.DataAnnotations
 
-<style>
-    .validation-errors {
-        color: #721c24;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        position: relative;
-        padding: .75rem 1.25rem .75rem 2rem;
-        margin-bottom: 1rem;
-        border: 1px solid transparent;
-        border-radius: .25rem;
-    }
-</style>
 <TelerikWindow Modal="true" Visible=@WindowVisible Centered="true">
     <WindowTitle>
         <strong>Create Category</strong>
@@ -61,6 +49,7 @@
             {
                 <div class="alert alert-success" role="alert">
                     @SuccessMessage
+                    <br />
                     <br />
                     <TelerikButton Primary="true" OnClick="@BackToCategoryManagement">Go back</TelerikButton>
                 </div>

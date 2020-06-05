@@ -2,7 +2,17 @@
 @inject HttpClient Http
 @using AmnasKitchen.Client.Shared;
 
-<section id="items">
+
+<section>
+  <MainSlider />
+</section>
+
+<div class="container">
+  <section>
+    <CategorySlider />
+  </section>
+
+  <section id="items">
     <div class="row">
       <div class="col-12">
         <h2>Featured Recipes</h2>
@@ -14,8 +24,8 @@
         <FeaturedRecipe Id="@i" />
       }
     </div>
-</section>
-
+  </section>
+</div>
 
 @code {
 }

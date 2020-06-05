@@ -1,0 +1,99 @@
+﻿
+@using AmnasKitchen.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+<!-- Recipes Categories
+  ======================= -->
+
+<style>
+    .btn-sq-lg {
+        width: 100% !important;
+    }
+
+    .btn-sq {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-sm {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 10px;
+    }
+
+    .btn-sq-xs {
+        width: 25px !important;
+        height: 25px !important;
+        padding: 2px;
+    }
+
+    .btn-ak-primary {
+        color: #fff;
+        background-color: #a44c9f;
+        border-color: #f56ced;
+    }
+
+        .btn-ak-primary:hover {
+            color: #fff;
+            background-color: #f56ced;
+            border-color: #a44c9f;
+        }
+</style>
+
+<section id="categories">
+    <div class="row">
+        <div class="col-10">
+            <h2>Categories</h2>
+        </div>
+        <div class="col-2">
+            <div class="w-100">
+                <button class="btn btn-light float-right" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="true" aria-controls="multiCollapseExample1"><i class="fa fa-angle-up"></i></button>
+            </div>
+        </div>
+        <hr />
+    </div>
+    <div id="multiCollapseExample1">
+
+        @if (categories == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div class="row wow zoomIn">
+                @foreach (var category in categories)
+                {
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <a href="#" class="btn btn-sq-lg btn-ak-primary mb-2">
+                            <img src="@($"{category.ImageUrl}")" alt="@($"{category.Name}")" width="48" height="48" /><br />
+                            @category.Name
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        <div class="row wow zoomIn">
+            <div class="col-12 text-center show-all">
+                <a href="/managecategory" class="btn btn-sq-lg btn-ak-primary">
+                    <i class="fa fa-cutlery fa-2x" aria-hidden="true"></i><br />
+                    Show All
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@code
+{
+
+    IList<Category> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+    }
+
+}

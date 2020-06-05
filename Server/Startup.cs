@@ -27,6 +27,7 @@ namespace AmnasKitchen.Server
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddMemoryCache();
 
             services.AddSingleton<DatabaseConnectionHandler>();
             services.AddSingleton<IRecipeService, RecipeService>();
