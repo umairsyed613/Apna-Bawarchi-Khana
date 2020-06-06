@@ -9,9 +9,6 @@ $(window).ready(function() {
   $("#splash").fadeOut();
 });
 
-
-//$('nav ul li a').click(function () { $('li a').removeClass("active"); $(this).addClass("active"); });
-
 function SetNavBarActive() {
   var url = window.location;
   //console.log(url.pathname);
