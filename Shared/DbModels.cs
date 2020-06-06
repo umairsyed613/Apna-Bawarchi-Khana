@@ -16,7 +16,9 @@ namespace AmnasKitchen.Shared
 
         public string Description { get; set; }
 
-        public string ImageUrl { get; set; }
+        public int? ImageId { get; set; }
+
+        public UploadedImage UploadedImage { get; set; }
 
         public ICollection<Recipe> Recipes { get; set; }
     }
@@ -49,12 +51,26 @@ namespace AmnasKitchen.Shared
         public Recipe Recipe { get; set; }
     }
 
+    public partial class RecipeImage
+    {
+        public int Id { get; set; }
+
+        public int RecipeId { get; set; }
+
+        public int ImageId { get; set; }
+
+        public Recipe Recipe { get; set; }
+
+        public UploadedImage UploadedImage { get; set; }
+    }
+
     public partial class Recipe
     {
         public Recipe()
         {
             this.Directions = new HashSet<Direction>();
             this.Ingredients = new HashSet<Ingredient>();
+            this.RecipeImages = new HashSet<RecipeImage>();
         }
 
         public int Id { get; set; }
@@ -82,6 +98,25 @@ namespace AmnasKitchen.Shared
         public ICollection<Direction> Directions { get; set; }
 
         public ICollection<Ingredient> Ingredients { get; set; }
+
+        public ICollection<RecipeImage> RecipeImages { get; set; }
+    }
+
+    public partial class UploadedImage
+    {
+        public UploadedImage()
+        {
+            this.Categories = new HashSet<Category>();
+            this.RecipeImages = new HashSet<RecipeImage>();
+        }
+
+        public int Id { get; set; }
+
+        public byte[] ImageData { get; set; }
+
+        public ICollection<Category> Categories { get; set; }
+
+        public ICollection<RecipeImage> RecipeImages { get; set; }
     }
 
     public partial class User
@@ -94,5 +129,4 @@ namespace AmnasKitchen.Shared
 
         public string Email { get; set; }
     }
-
 }

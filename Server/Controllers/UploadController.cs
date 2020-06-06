@@ -18,7 +18,7 @@ namespace AmnasKitchen.Server.Controllers
 
         public UploadController(IPathProvider pathProvider)
         {
-            _pathProvider = pathProvider;
+            _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         }
 
         [HttpPost]
@@ -65,7 +65,7 @@ namespace AmnasKitchen.Server.Controllers
                 return Task.CompletedTask;
             }
         }
-        
+
         [HttpPost]
         public Task RemoveByPath([FromBody] string path)
         {

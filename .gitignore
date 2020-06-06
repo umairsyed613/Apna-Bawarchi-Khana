@@ -338,5 +338,3 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/Server/images/*
-/Client/wwwroot/images/caticons

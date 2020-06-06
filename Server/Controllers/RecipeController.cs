@@ -27,9 +27,9 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task CreateCategory([FromBody] Category category)
+        public async Task CreateCategory([FromBody] CreateCategoryFormData categoryFormData)
         {
-            await _recipeService.CreateCategory(category);
+            await _recipeService.CreateCategory(categoryFormData);
         }
         
         [HttpDelete("[action]/{categoryId}")]

@@ -66,7 +66,9 @@
                 {
                     <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
                         <a href="#" class="btn btn-sq-lg btn-ak-primary mb-2">
-                            <img src="@($"{category.ImageUrl}")" alt="@($"{category.Name}")" width="48" height="48" /><br />
+                            @*<img src="@($"{category.ImageUrl}")" alt="@($"{category.Name}")" width="48" height="48" />*@
+                            <img src="data:image/bmp;base64, @(Convert.ToBase64String(category.UploadedImage?.ImageData))" alt="@($"{category.Name}")" width="48" height="48" />
+                            <br />
                             @category.Name
                         </a>
                     </div>

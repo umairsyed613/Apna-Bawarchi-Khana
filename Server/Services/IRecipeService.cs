@@ -17,7 +17,7 @@ namespace AmnasKitchen.Server.Services
 
         Task CreateRecipe(Recipe Recipe);
 
-        Task CreateCategory(Category category);
+        Task CreateCategory(CreateCategoryFormData categoryFormData);
 
         Task DeleteCategory(int categoryId);
     }

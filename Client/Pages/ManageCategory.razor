@@ -42,15 +42,15 @@
                             <GridColumn Field="@(nameof(Category.Id))" Width="70px" />
                             <GridColumn Field="@(nameof(Category.Name))" Title="Name" />
                             <GridColumn Field="@(nameof(Category.Description))" Title="Description" />
-                            <GridColumn Field="@(nameof(Category.ImageUrl))" Title="Icon" Width="90px">
+                            <GridColumn Field="@(nameof(Category.UploadedImage))" Title="Icon" Width="90px">
                                 <Template>
                                     @{
                                         var cat = context as Category;
                                     }
-                                    @if (cat?.ImageUrl != null)
+                                    @if (cat?.UploadedImage != null)
                                     {
                                         <div class="category-item text-center">
-                                            <img src="@($"{cat.ImageUrl}")" alt="@($"{cat.Name}")" class="catIconGrid" />
+                                            <img src="data:image/bmp;base64, @(Convert.ToBase64String(cat.UploadedImage?.ImageData))" alt="@($"{cat.Name}")" class="catIconGrid" />
                                         </div>
                                     }
                                 </Template>
@@ -79,22 +79,8 @@
     {
         var category = (Category)args.Item;
 
-        if (category.ImageUrl != null)
-        {
-            var response = await Http.PostAsJsonAsync("api/upload/RemoveByPath", category.ImageUrl);
-
-            if (response.IsSuccessStatusCode || (await response.Content.ReadAsStringAsync()).Contains("File cannot be deleted"))
-            {
-                await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
-                categories.Remove(category);
-
-            }
-        }
-        else
-        {
-            await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
-            categories.Remove(category);
-        }
+        await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
+        categories.Remove(category);
     }
 
     protected void MyClickHandler()
