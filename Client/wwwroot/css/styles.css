@@ -50,17 +50,97 @@ table {
 ** Splash Screen
 ** -----------------------------------------------------------------------------
 */
+@-webkit-keyframes dots {
+  0% {
+    background-position: 0px;
+  }
 
-#splash {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  z-index: 42;
+  100% {
+    background-position: 30px;
+  }
 }
 
+#splashtext {
+  font-family: 'Poiret One', cursive;
+  font-size: 30pt;
+  width: 100%;
+  height: 20%;
+  margin: auto;
+  position: absolute;
+  top: 40%;
+  text-align: center;
+}
+
+#splashtext > span {
+  background: linear-gradient(to right, transparent 50%, black 50%);
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-animation: dots 1s infinite steps(25);
+  padding-right: 30px;
+  margin-right: -40px;
+}
+
+#splash {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(128deg, #6e988d, #859fda, #bcda85, #c0a1cf, #cfcda1);
+  background-size: 1000% 1000%;
+  display: flex;
+  align-items: center;
+  -webkit-animation: ColorFade 22s ease infinite;
+  -moz-animation: ColorFade 22s ease infinite;
+  animation: ColorFade 22s ease infinite;
+}
+
+@-webkit-keyframes ColorFade {
+  0% {
+    background-position: 9% 0%
+  }
+
+  50% {
+    background-position: 92% 100%
+  }
+
+  100% {
+    background-position: 9% 0%
+  }
+}
+
+@-moz-keyframes ColorFade {
+  0% {
+    background-position: 9% 0%
+  }
+
+  50% {
+    background-position: 92% 100%
+  }
+
+  100% {
+    background-position: 9% 0%
+  }
+}
+
+@keyframes ColorFade {
+  0% {
+    background-position: 9% 0%
+  }
+
+  50% {
+    background-position: 92% 100%
+  }
+
+  100% {
+    background-position: 9% 0%
+  }
+}
+
+
+/*
+    END
+*/
 
 .bg-ak {
   background-color: #a44c9f !important;
@@ -304,6 +384,7 @@ table {
 footer {
   background-color: #a44c9f;
   color: #f9f9f9;
+  padding: 10px 0 20px 0;
 }
 .footer-about {
   margin-bottom: 24px;

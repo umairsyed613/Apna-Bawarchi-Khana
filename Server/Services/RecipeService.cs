@@ -58,28 +58,27 @@ namespace AmnasKitchen.Server.Services
 
         public async Task CreateRecipe(CreateRecipeFormData recipeFormData)
         {
-            // if (recipeFormData == null)
-            // {
-            // throw new ArgumentNullException(nameof(recipeFormData));
-            // }
+            if (recipeFormData == null)
+            {
+                throw new ArgumentNullException(nameof(recipeFormData));
+            }
 
-            // using var connection = _databaseConnectionHandler.GetDbConnection();
-            // connection.Open();
+            var recipe = await _dbContext.Recipes.AddAsync(recipeFormData.Recipe);
 
-            // var sql = @"INSERT INTO sa_amna.Recipe (Time, TimeUnit, Difficulty, Serving, Description, CreatedAt)
-            // Values (@time, @timeUnit, @difficulty, @serving, @description, @createdAt); SELECT CAST(SCOPE_IDENTITY() as int)";
+            if (recipeFormData.Images.Any())
+            {
+                foreach (var image in recipeFormData.Images)
+                {
+                    if (!string.IsNullOrEmpty(image))
+                    {
+                        var imageData = await akImageFileService.GetFileAsBytes(image);
+                        var insertedImageId = await StoreImageInDb(imageData);
 
-            // var recipeId = await connection.QuerySingleAsync<int>(
-            // sql,
-            // new
-            // {
-            // recipeFormData.Recipe.Time,
-            // recipeFormData.Recipe.TimeUnit,
-            // recipeFormData.Recipe.Difficulty,
-            // recipeFormData.Recipe.Serving,
-            // recipeFormData.Recipe.Description,
-            // DateTime.Now
-            // });
+                        await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
+                    }
+
+                }
+            }
         }
 
         public async Task CreateCategory(CreateCategoryFormData categoryFormData)

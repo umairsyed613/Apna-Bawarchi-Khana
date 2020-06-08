@@ -4,10 +4,10 @@ $(document).ready(function () {
 
 });
 
-$(window).ready(function() {
-  // Splash Screen
-  $("#splash").fadeOut();
-});
+//$(window).ready(function() {
+//  // Splash Screen
+//  $("#splash").fadeOut();
+//});
 
 function SetNavBarActive() {
   var url = window.location;

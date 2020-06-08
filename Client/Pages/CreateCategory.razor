@@ -77,8 +77,10 @@
 
     CategoryForm categoryForm { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         categoryForm = new CategoryForm();
         MyEditContext = new EditContext(categoryForm);
     }
@@ -93,15 +95,15 @@
     async Task HandleValidSubmit()
     {
         var response = await Http.PostAsJsonAsync("api/Recipe/CreateCategory", new CreateCategoryFormData
-                                                                                   {
-                                                                                       Category = new Category { Name = categoryForm.Name, Description = categoryForm.Description },
-                                                                                       IconPath = categoryForm.IconPath
-                                                                                   });
+        {
+            Category = new Category { Name = categoryForm.Name, Description = categoryForm.Description },
+            IconPath = categoryForm.IconPath
+        });
 
-                                                                                            if (response.IsSuccessStatusCode)
-                                                                                            {
-                                                                                            await this.OnInitializedAsync();
-                                                                                   }
+        if (response.IsSuccessStatusCode)
+        {
+            await this.OnInitializedAsync();
+        }
         SuccessMessage = "Category Created Successfully! We will get back to you.";
     }
 
@@ -110,19 +112,19 @@
         SuccessMessage = "";
     }
 
-    async Task BackToCategoryManagement()
+    void BackToCategoryManagement()
     {
         NavigationManager.NavigateTo("/managecategory");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    async Task OnUploadOrRemoveHandler(UploadEventArgs e)
+    void OnUploadOrRemoveHandler(UploadEventArgs e)
     {
         e.RequestData.Add("path", pathToIcons);
     }
 
-    async Task OnSuccessHandler(UploadSuccessEventArgs e)
+    void OnSuccessHandler(UploadSuccessEventArgs e)
     {
         var actionText = e.Operation == UploadOperationType.Upload ? "uploaded" : "removed";
 

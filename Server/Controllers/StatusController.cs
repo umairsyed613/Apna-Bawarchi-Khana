@@ -29,7 +29,7 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<string> PingDb()
+        public string PingDb()
         {
             try
             {

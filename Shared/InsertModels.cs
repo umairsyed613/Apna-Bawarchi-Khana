@@ -16,5 +16,7 @@ namespace AmnasKitchen.Shared
         public Recipe Recipe { get; set; }
 
         public List<int> CategoryIds { get; set; }
+
+        public List<string> Images { get; set; }
     }
 }
