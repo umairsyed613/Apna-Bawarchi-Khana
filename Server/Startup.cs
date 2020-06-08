@@ -10,6 +10,7 @@ using System.Linq;
 using AmnasKitchen.Server.Database;
 using AmnasKitchen.Server.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace AmnasKitchen.Server
 {
@@ -74,7 +75,7 @@ namespace AmnasKitchen.Server
 #if DEBUG
             var conn = configuration.GetConnectionString("DATABASE_URL");
 #else
-                var conn = Environment.GetEnvironmentVariable("DATABASE_URL");
+                var conn = System.Environment.GetEnvironmentVariable("DATABASE_URL");
 #endif
             return conn;
         }
