@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using AmnasKitchen.Server.Database;
 using AmnasKitchen.Server.Services;
-using AmnasKitchen.Shared;
 
-using Dapper;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
 namespace AmnasKitchen.Server.Controllers
 {
@@ -18,12 +13,12 @@ namespace AmnasKitchen.Server.Controllers
     [ApiController]
     public class StatusController : ControllerBase
     {
-        private readonly DatabaseConnectionHandler _databaseConnectionHandler;
+        private readonly AmnasKitchenDbContext _databaseContext;
         private readonly IPathProvider _pathProvider;
 
-        public StatusController(DatabaseConnectionHandler connectionHandler, IPathProvider pathProvider)
+        public StatusController(AmnasKitchenDbContext databaseContext, IPathProvider pathProvider)
         {
-            _databaseConnectionHandler = connectionHandler ?? throw new ArgumentNullException(nameof(connectionHandler));
+            _databaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
             _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         }
 
@@ -38,11 +33,7 @@ namespace AmnasKitchen.Server.Controllers
         {
             try
             {
-                using var connection = new SqlConnection(_databaseConnectionHandler.GetDbConnectionString());
-                connection.Open();
-                var data = await connection.QueryAsync<User>(@"SELECT * FROM sa_amna.Users");
-
-                return data?.Count().ToString() ?? "No Data but have connection to Db";
+                return _databaseContext.Categories.Count().ToString();
             }
             catch
             {

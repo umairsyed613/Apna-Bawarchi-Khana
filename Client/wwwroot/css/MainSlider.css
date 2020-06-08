@@ -8,12 +8,12 @@
         background: rgba(0,0,0,0.45);
         bottom: 0;
         color: #fff;
-        overflow: hidden;
+       /* overflow: hidden;
         padding: 2% 3% 3%;
         position: absolute;
         white-space: normal;
         width: 100%;
-        z-index: 100;
+        z-index: 100;*/
     }
 
 @media (min-width: 768px) and (max-width: 991px) {

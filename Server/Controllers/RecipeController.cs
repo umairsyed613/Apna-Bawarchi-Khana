@@ -39,9 +39,9 @@ namespace AmnasKitchen.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task CreateRecipe([FromBody] Recipe recipe)
+        public async Task CreateRecipe([FromBody] CreateRecipeFormData recipeFormData)
         {
-            await _recipeService.CreateRecipe(recipe);
+            await _recipeService.CreateRecipe(recipeFormData);
         }
     }
 }

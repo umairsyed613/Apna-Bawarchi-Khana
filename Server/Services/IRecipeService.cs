@@ -15,7 +15,7 @@ namespace AmnasKitchen.Server.Services
 
         Task<IEnumerable<Category>> GetAllCategories();
 
-        Task CreateRecipe(Recipe Recipe);
+        Task CreateRecipe(CreateRecipeFormData recipeFormData);
 
         Task CreateCategory(CreateCategoryFormData categoryFormData);
 

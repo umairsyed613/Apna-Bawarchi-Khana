@@ -9,6 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    <link href="manifest.json" rel="manifest" />
 
     <!-- Favicon
     ============ -->
@@ -33,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
-    <link rel="stylesheet" type="text/css" href="css/MainSlider.css" />
+    <!--<link rel="stylesheet" type="text/css" href="css/MainSlider.css" />-->
     <link href="css/kendo-theme-bootstrap/all.css" rel="stylesheet" />
     <script src="js/telerik-blazor.js" defer></script>
 
@@ -57,15 +58,16 @@
     <script charset="utf-8" src="js/bootstrap.min.js"></script>
     <script charset="utf-8" src="js/wow.min.js"></script>
     <script charset="utf-8" src="js/scripts.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-06TLMWM3JL"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-06TLMWM3JL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-    gtag('config', 'G-06TLMWM3JL');
-</script>
+        gtag('config', 'G-06TLMWM3JL');
+    </script>
 </body>
 </html>

@@ -10,4 +10,11 @@ namespace AmnasKitchen.Shared
 
         public string IconPath { get; set; }
     }
+    
+    public class CreateRecipeFormData
+    {
+        public Recipe Recipe { get; set; }
+
+        public List<int> CategoryIds { get; set; }
+    }
 }

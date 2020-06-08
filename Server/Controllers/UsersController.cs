@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using AmnasKitchen.Server.Services;
+using AmnasKitchen.Server.Database;
 using AmnasKitchen.Shared;
 
-using Dapper;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace AmnasKitchen.Server.Controllers
@@ -17,11 +17,11 @@ namespace AmnasKitchen.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly DatabaseConnectionHandler _databaseConnectionHandler;
+        private readonly AmnasKitchenDbContext _dbContext;
 
-        public UsersController(DatabaseConnectionHandler connectionHandler)
+        public UsersController(AmnasKitchenDbContext dbContext)
         {
-            _databaseConnectionHandler = connectionHandler ?? throw new ArgumentNullException(nameof(connectionHandler));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         [HttpGet("[action]")]
@@ -29,10 +29,7 @@ namespace AmnasKitchen.Server.Controllers
         {
             try
             {
-                using var connection = new SqlConnection(_databaseConnectionHandler.GetDbConnectionString());
-                connection.Open();
-
-                return await connection.QueryAsync<User>(@"SELECT * FROM sa_amna.Users");
+                return await _dbContext.Users.ToListAsync();
             }
             catch
             {

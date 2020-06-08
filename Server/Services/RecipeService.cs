@@ -3,41 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using AmnasKitchen.Server.Database;
 using AmnasKitchen.Shared;
 
-using Dapper;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace AmnasKitchen.Server.Services
 {
     public class RecipeService : IRecipeService
     {
-        private readonly DatabaseConnectionHandler _databaseConnectionHandler;
+        private readonly AmnasKitchenDbContext _dbContext;
         private readonly IMemoryCache _memoryCache;
         private readonly IAkImageFileService akImageFileService;
 
-        public RecipeService(IMemoryCache memoryCache, DatabaseConnectionHandler connectionHandler, IAkImageFileService akImageFileService)
+        public RecipeService(IMemoryCache memoryCache, AmnasKitchenDbContext dbContext, IAkImageFileService akImageFileService)
         {
-            _databaseConnectionHandler = connectionHandler ?? throw new ArgumentNullException(nameof(connectionHandler));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             this.akImageFileService = akImageFileService ?? throw new ArgumentNullException(nameof(akImageFileService));
         }
 
         public async Task<Recipe> GetRecipeById(int recipeId)
         {
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
-
-            return await connection.QueryFirstOrDefaultAsync<Recipe>("Select * from sa_amna.Recipe where Id = " + recipeId);
+            return await _dbContext.Recipes.AsNoTracking().FirstOrDefaultAsync(w => w.Id == recipeId);
         }
 
         public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)
         {
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
-
-            return await connection.QueryAsync<Recipe>("Select * from sa_amna.Recipe where CategoryId = " + categoryId);
+            return await _dbContext.Recipes.Include(i => i.RecipeCategories).AsNoTracking().Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId)).ToListAsync();
         }
 
         public async Task<IEnumerable<Category>> GetAllCategories()
@@ -48,19 +42,13 @@ namespace AmnasKitchen.Server.Services
             }
             else
             {
-                using var connection = _databaseConnectionHandler.GetDbConnection();
-                connection.Open();
-                var sql = "Select c.*, ui.* from sa_amna.Categories c inner join sa_amna.UploadedImages ui on c.ImageId = ui.Id";
+                List<Category> result = null;
+                result = await _dbContext.Categories.Include(i => i.UploadedImage).AsNoTracking().ToListAsync();
 
-                var result = await connection.QueryAsync<Category, UploadedImage, Category>(
-                                 sql,
-                                 map: (c, u) =>
-                                     {
-                                         c.UploadedImage = u;
-
-                                         return c;
-                                     },
-                                 splitOn: "ImageId");
+                if (result == null)
+                {
+                    return null;
+                }
 
                 _memoryCache.Set(CacheKeys.AllCategories, result, DateTimeOffset.UtcNow.AddHours(2));
 
@@ -68,27 +56,30 @@ namespace AmnasKitchen.Server.Services
             }
         }
 
-        public async Task CreateRecipe(Recipe recipe)
+        public async Task CreateRecipe(CreateRecipeFormData recipeFormData)
         {
-            if (recipe == null)
-            {
-                throw new ArgumentNullException(nameof(recipe));
-            }
+            // if (recipeFormData == null)
+            // {
+            // throw new ArgumentNullException(nameof(recipeFormData));
+            // }
 
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
-            var sql = "INSERT INTO sa_amna.Recipe (CategoryId, Time, TimeUnit, Difficulty, Serving) Values (@categoryId, @time, @timeUnit, @difficulty, @serving)";
+            // using var connection = _databaseConnectionHandler.GetDbConnection();
+            // connection.Open();
 
-            await connection.ExecuteAsync(
-                sql,
-                new
-                    {
-                        recipe.CategoryId,
-                        recipe.Time,
-                        recipe.TimeUnit,
-                        recipe.Difficulty,
-                        recipe.Serving
-                    });
+            // var sql = @"INSERT INTO sa_amna.Recipe (Time, TimeUnit, Difficulty, Serving, Description, CreatedAt)
+            // Values (@time, @timeUnit, @difficulty, @serving, @description, @createdAt); SELECT CAST(SCOPE_IDENTITY() as int)";
+
+            // var recipeId = await connection.QuerySingleAsync<int>(
+            // sql,
+            // new
+            // {
+            // recipeFormData.Recipe.Time,
+            // recipeFormData.Recipe.TimeUnit,
+            // recipeFormData.Recipe.Difficulty,
+            // recipeFormData.Recipe.Serving,
+            // recipeFormData.Recipe.Description,
+            // DateTime.Now
+            // });
         }
 
         public async Task CreateCategory(CreateCategoryFormData categoryFormData)
@@ -98,8 +89,11 @@ namespace AmnasKitchen.Server.Services
                 throw new ArgumentNullException(nameof(categoryFormData));
             }
 
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
+            if (categoryFormData.Category == null)
+            {
+                throw new ArgumentNullException(nameof(categoryFormData.Category));
+            }
+
             int? insertedImageId = null;
 
             if (!string.IsNullOrEmpty(categoryFormData.IconPath))
@@ -108,42 +102,41 @@ namespace AmnasKitchen.Server.Services
                 insertedImageId = await StoreImageInDb(imageData);
             }
 
-            var sql = "INSERT INTO sa_amna.Categories (Name, Description, ImageId) VALUES(@name, @description, @imageId)";
-            await connection.ExecuteAsync(sql, new { name = categoryFormData.Category.Name, description = categoryFormData.Category.Description, imageId = insertedImageId });
+            categoryFormData.Category.ImageId = insertedImageId;
+
+            await _dbContext.Categories.AddAsync(categoryFormData.Category);
+
+            await _dbContext.SaveChangesAsync();
+
             _memoryCache.Remove(CacheKeys.AllCategories);
         }
 
         public async Task DeleteCategory(int categoryId)
         {
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
-            var category = await connection.QuerySingleAsync<Category>("select * from sa_amna.Categories Where Id = @id", new { id = categoryId });
+            var category = await _dbContext.Categories.Include(i => i.UploadedImage).FirstOrDefaultAsync(f => f.Id == categoryId);
 
             if (category == null)
             {
                 throw new ArgumentNullException(nameof(category));
             }
 
-            var sql = "Delete from sa_amna.Categories Where Id = @id";
-
-            await connection.ExecuteAsync(sql, new { id = categoryId });
-
             if (category.ImageId != null)
             {
-                await connection.ExecuteAsync("Delete from sa_amna.UploadedImages Where Id = @id", new { id = category.ImageId });
+                _dbContext.UploadedImages.Remove(category.UploadedImage);
             }
 
+            _dbContext.Categories.Remove(category);
+            await _dbContext.SaveChangesAsync();
             _memoryCache.Remove(CacheKeys.AllCategories);
         }
 
         private async Task<int> StoreImageInDb(byte[] imageData)
         {
-            using var connection = _databaseConnectionHandler.GetDbConnection();
-            connection.Open();
+            var imData = new UploadedImage { ImageData = imageData };
+            var uploadedImage = await _dbContext.UploadedImages.AddAsync(imData);
+            await _dbContext.SaveChangesAsync();
 
-            return await connection.QuerySingleAsync<int>(
-                       @"INSERT INTO sa_amna.UploadedImages (ImageData) VALUES (@imageData); SELECT CAST(SCOPE_IDENTITY() as int)",
-                       new { imageData });
+            return uploadedImage.Entity.Id;
         }
     }
 }

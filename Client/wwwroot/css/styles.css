@@ -90,7 +90,7 @@ table {
 
 #categories {
   background-color: #f9f9f9;
-  padding: 12px 5px 24px 5px;
+  padding: 5px 5px 0px 15px;
 }
 #categories h2 {
   color: #333;
@@ -349,4 +349,55 @@ h2 {
   margin-bottom: 1rem;
   border: 1px solid transparent;
   border-radius: .25rem;
+}
+
+.top-content {
+  width: 100%;
+  padding: 0 0 10px 0;
+}
+
+.slider_text {
+  background: rgba(0,0,0,0.45);
+  bottom: 0;
+  color: #fff;
+  left: 0 !important;
+  right: 0 !important;
+  /* overflow: hidden;
+        padding: 2% 3% 3%;
+        position: absolute;
+        white-space: normal;
+        width: 100%;
+        z-index: 100;*/
+}
+
+
+/*Extra small devices (portrait phones, less than 576px)*/
+@media (max-width: 575.98px) {
+
+  }
+
+/*Small devices (landscape phones, 576px and up)*/
+
+@media (min-width: 576px) and (max-width: 767.98px) {}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .mainSliderInner > .carousel-item {
+    max-height: 300px !important;
+  }
+}
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .mainSliderInner > .carousel-item {
+    max-height: 300px !important;
+  }
+}
+
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
+  .mainSliderInner > .carousel-item {
+    max-height: 400px !important;
+  }
 }

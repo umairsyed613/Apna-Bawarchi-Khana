@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 
+using AmnasKitchen.Server.Database;
 using AmnasKitchen.Server.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmnasKitchen.Server
 {
@@ -25,11 +27,12 @@ namespace AmnasKitchen.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddDbContext<AmnasKitchenDbContext>(options => options.UseSqlServer(GetDbConnectionString(Configuration)), ServiceLifetime.Singleton);
+
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddRazorPages();
             services.AddMemoryCache();
 
-            services.AddSingleton<DatabaseConnectionHandler>();
             services.AddSingleton<IPathProvider, PathProvider>();
             services.AddSingleton<IAkImageFileService, AkImageFileService>();
             services.AddSingleton<IRecipeService, RecipeService>();
@@ -64,6 +67,16 @@ namespace AmnasKitchen.Server
 
                 endpoints.MapFallbackToFile("index.html");
             });
+        }
+
+        private static string GetDbConnectionString(IConfiguration configuration)
+        {
+#if DEBUG
+            var conn = configuration.GetConnectionString("DATABASE_URL");
+#else
+                var conn = Environment.GetEnvironmentVariable("DATABASE_URL");
+#endif
+            return conn;
         }
     }
 }
