@@ -12,6 +12,8 @@ $(document).ready(function () {
 function SetNavBarActive() {
   var url = window.location;
   console.log(url.pathname);
+
+
   //$(".nav a").find(".active").removeClass("active");
   //$(".nav a").parent().addClass("active");
 
