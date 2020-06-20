@@ -1,0 +1,51 @@
+
+/*Extra small devices (portrait phones, less than 576px)*/
+@media (max-width: 575.98px) {
+
+  .recipe-itemSize {
+    max-width: 400px;
+  }
+
+  }
+
+/*Small devices (landscape phones, 576px and up)*/
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .recipe-itemSize {
+    max-width: 380px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .mainSliderInner > .carousel-item {
+    max-height: 300px !important;
+  }
+
+  .recipe-itemSize {
+    max-width: 320px;
+  }
+}
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .mainSliderInner > .carousel-item {
+    max-height: 300px !important;
+  }
+
+  .recipe-itemSize {
+    max-width: 290px;
+  }
+}
+
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
+  .mainSliderInner > .carousel-item {
+    max-height: 520px !important;
+  }
+
+  .recipe-itemSize {
+    max-width: 430px;
+  }
+}

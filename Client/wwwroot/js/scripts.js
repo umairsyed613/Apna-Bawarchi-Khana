@@ -1,20 +1,24 @@
+
 $(document).ready(function () {
-  // Activate WOW.js
-  new WOW().init();
+  setTimeout(function () {
+    $("#mycontentslider").lightSlider({
+      loop: true,
+      item: 3,
+      keyPress: true
+    });
+  }, 3000);
 
 });
 
-//$(window).ready(function() {
-//  // Splash Screen
-//  $("#splash").fadeOut();
-//});
 
 function SetNavBarActive() {
   var url = window.location;
   console.log(url.pathname);
 
+}
 
-  //$(".nav a").find(".active").removeClass("active");
-  //$(".nav a").parent().addClass("active");
-
+function toggleNavBar() {
+  if ($("#navBarBtn").is(":visible") == true && $('#navbarSupportedContent').hasClass("show")) {
+    $('#navbarSupportedContent').collapse('toggle');
+  }
 }

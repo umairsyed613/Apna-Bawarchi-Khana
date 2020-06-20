@@ -2,8 +2,7 @@
 @page "/viewrecipe/{id}"
 <!-- Recipe Section
  =================== -->
-<div class="container-fluid">
-  <section id="recipe">
+  <section id="recipe" class="pr-4 pl-4 mb-4">
     <div class="row">
       <!-- Title -->
       <div class="col-12">
@@ -13,12 +12,11 @@
     <div class="row vertical-align">
       <div class="col-12">
         <!-- Picture -->
-        <div class="col-md-8 pull-left wow swing pl-0 pr-4">
-          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" class="d-flex img-fluid w-100 img-thumbnail"/>
+        <div class="col-lg-6 pull-left">
+          <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" class="d-flex img-fluid w-100 img-thumbnail img-recipe"/>
         </div>
-
         <!-- Info -->
-        <div class="col-md-4 pull-right wow lightSpeedIn nopadding">
+        <div class="col-lg-6 pull-right">
           <div class="recipe-info">
             <h3>Info</h3>
             <!-- Time -->
@@ -63,7 +61,7 @@
       </div>
     </div>
     <!-- Ingredients -->
-    <div class="row wow slideInUp">
+    <div class="row">
       <div class="col-12">
         <div class="recipe-ingredients">
           <h3>Ingredients</h3>
@@ -83,7 +81,7 @@
       </div>
     </div>
     <!-- Directions -->
-    <div class="row wow slideInUp">
+    <div class="row">
       <div class="col-12">
         <div class="recipe-directions">
           <h3>Directions</h3>
@@ -101,7 +99,7 @@
       </div>
     </div>
     <!-- Back to recipes -->
-    <div class="row wow rollIn">
+    <div class="row">
       <div class="col-12 text-center">
         <a href="/">
           <i class="fa fa-backward" aria-hidden="true"></i>
@@ -110,8 +108,6 @@
       </div>
     </div>
   </section>
-
-</div>
 @code
 {
   [Parameter]

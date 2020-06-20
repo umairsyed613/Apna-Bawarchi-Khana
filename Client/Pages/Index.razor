@@ -6,26 +6,25 @@
 <section>
   <MainSlider />
 </section>
-
-<div class="container-fluid">
   <section>
     <CategorySlider />
   </section>
 
-  <section id="items">
+  <section id="items" class="rounded mt-3 p-4 mb-4">
     <div class="row">
       <div class="col-12">
         <h2>Featured Recipes</h2>
       </div>
     </div>
-    <div class="row">
-      @for (int i = 0; i < 9; i++)
+    <hr />
+
+    <div class="d-flex align-content-center justify-content-between flex-wrap">
+      @for (int i = 0; i < 8; i++)
       {
         <FeaturedRecipe Id="@i" />
       }
     </div>
   </section>
-</div>
 
 @code {
 }

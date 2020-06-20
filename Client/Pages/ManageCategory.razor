@@ -13,59 +13,54 @@
     }
 </style>
 
-<div class="container">
-    <section>
-        <h2>Manage Categories</h2>
-        <hr />
-    </section>
-
-    <section>
-        <div class="row pb-5">
-            <div class="col-12">
-                <TelerikButton ButtonType="@ButtonType.Submit" OnClick="@MyClickHandler" Primary="false" Class="w-100">Create New Category</TelerikButton>
-            </div>
+<section id="manageCategories">
+    <h2>Manage Categories</h2>
+    <hr />
+    <div class="row pb-5">
+        <div class="col-12">
+            <TelerikButton ButtonType="@ButtonType.Submit" OnClick="@MyClickHandler" Primary="false" Class="w-100">Create New Category</TelerikButton>
         </div>
+    </div>
 
-        <div class="row pb-5">
-            <div class="col-12">
-                @if (categories == null)
-                {
-                    <div class="spinner-border text-success" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                }
-                else
-                {
-                    <TelerikGrid Data="@categories" Height="450px" OnDelete="@DeleteHandler"
-                                 Pageable="true" PageSize="4">
-                        <GridColumns>
-                            <GridColumn Field="@(nameof(Category.Id))" Width="70px" />
-                            <GridColumn Field="@(nameof(Category.Name))" Title="Name" />
-                            <GridColumn Field="@(nameof(Category.Description))" Title="Description" />
-                            <GridColumn Field="@(nameof(Category.UploadedImage))" Title="Icon" Width="90px">
-                                <Template>
-                                    @{
-                                        var cat = context as Category;
-                                    }
-                                    @if (cat?.UploadedImage != null)
-                                    {
-                                        <div class="category-item text-center">
-                                            <img src="data:image/bmp;base64, @(Convert.ToBase64String(cat.UploadedImage?.ImageData))" alt="@($"{cat.Name}")" class="catIconGrid" />
-                                        </div>
-                                    }
-                                </Template>
-                            </GridColumn>
-                            <GridCommandColumn Width="70px">
-                                <GridCommandButton Command="Delete" Icon="delete"></GridCommandButton>
-                            </GridCommandColumn>
-                        </GridColumns>
-                    </TelerikGrid>
-                }
+    <div class="row pb-5">
+        <div class="col-12">
+            @if (categories == null)
+            {
+                <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            }
+            else
+            {
+                <TelerikGrid Data="@categories" Height="450px" OnDelete="@DeleteHandler"
+                             Pageable="true" PageSize="4">
+                    <GridColumns>
+                        <GridColumn Field="@(nameof(Category.Id))" Width="70px" />
+                        <GridColumn Field="@(nameof(Category.Name))" Title="Name" />
+                        <GridColumn Field="@(nameof(Category.Description))" Title="Description" />
+                        <GridColumn Field="@(nameof(Category.UploadedImage))" Title="Icon" Width="90px">
+                            <Template>
+                                @{
+                                    var cat = context as Category;
+                                }
+                                @if (cat?.UploadedImage != null)
+                                {
+                                    <div class="category-item text-center">
+                                        <img src="data:image/bmp;base64, @(Convert.ToBase64String(cat.UploadedImage?.ImageData))" alt="@($"{cat.Name}")" class="catIconGrid" />
+                                    </div>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridCommandColumn Width="70px">
+                            <GridCommandButton Command="Delete" Icon="delete"></GridCommandButton>
+                        </GridCommandColumn>
+                    </GridColumns>
+                </TelerikGrid>
+            }
 
-            </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
 @code {
     IList<Category> categories;
 
