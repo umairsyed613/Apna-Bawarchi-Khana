@@ -63,7 +63,16 @@ namespace AmnasKitchen.Server.Services
                 throw new ArgumentNullException(nameof(recipeFormData));
             }
 
-            var recipe = await _dbContext.Recipes.AddAsync(recipeFormData.Recipe);
+            var recipe = await _dbContext.Recipes.AddAsync(new Recipe
+                                                               {
+                                                                   Title = recipeFormData.Recipe.Title,
+                                                                   Description = recipeFormData.Recipe.Description,
+                                                                   Difficulty = recipeFormData.Recipe.Difficulty,
+                                                                   Serving = recipeFormData.Recipe.Serving,
+                                                                   Time = recipeFormData.Recipe.Time,
+                                                                   TimeUnit = recipeFormData.Recipe.TimeUnit,
+                                                                   CreatedAt = DateTime.UtcNow
+                                                               });
 
             if (recipeFormData.Images.Any())
             {

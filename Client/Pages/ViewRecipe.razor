@@ -2,14 +2,15 @@
 @page "/viewrecipe/{id}"
 <!-- Recipe Section
  =================== -->
-  <section id="recipe" class="pr-4 pl-4 mb-4">
+  <section id="recipe" class="rounded pr-4 pl-4 mb-4">
     <div class="row">
       <!-- Title -->
       <div class="col-12">
         <h2>Barbecue Ribs (@Id)</h2>
       </div>
     </div>
-    <div class="row vertical-align">
+    <hr />
+    <div class="mt-2 row vertical-align">
       <div class="col-12">
         <!-- Picture -->
         <div class="col-lg-6 pull-left">
@@ -20,41 +21,52 @@
           <div class="recipe-info">
             <h3>Info</h3>
             <!-- Time -->
-            <div class="row">
-              <div class="col-2 text-center">
+            <div class="row recipe-info-row">
+              <div class="col-1 text-center">
                 <i class="fa fa-clock-o" aria-hidden="true"></i>
               </div>
               <div class="col-6">Time</div>
-              <div class="col-4">3:00 H</div>
+              <div class="col-5">3:00 H</div>
             </div>
             <!-- Difficulty -->
-            <div class="row">
-              <div class="col-2 text-center">
-                <i class="fa fa-chart-area" aria-hidden="true"></i>
+            <div class="row recipe-info-row">
+              <div class="col-1 text-center">
+                <i class="fa fa-area-chart" aria-hidden="true"></i>
               </div>
               <div class="col-6">Difficulty</div>
-              <div class="col-4">
+              <div class="col-5">
                 <i class="fa fa-star" aria-hidden="true"></i>
                 <i class="fa fa-star" aria-hidden="true"></i>
                 <i class="fa fa-star" aria-hidden="true"></i>
               </div>
             </div>
             <!-- Serves -->
-            <div class="row">
-              <div class="col-2 text-center">
+            <div class="row recipe-info-row">
+              <div class="col-1 text-center">
                 <i class="fa fa-users" aria-hidden="true"></i>
               </div>
               <div class="col-6">Servings</div>
-              <div class="col-4">5</div>
+              <div class="col-5">5</div>
             </div>
 
             <!-- Chef -->
-            <div class="row">
-              <div class="col-2 text-center">
+            <div class="row recipe-info-row">
+              <div class="col-1 text-center">
                 <i class="fa fa-female" aria-hidden="true"></i>
               </div>
               <div class="col-6">Recipe By</div>
-              <div class="col-4">Amna</div>
+              <div class="col-5">Amna</div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 mt-4 p-0">
+                
+                <blockquote class="blockquote blockquote-custom bg-white p-5 shadow rounded">
+                  <div class="blockquote-custom-icon bg-ak shadow-sm"><i class="fa fa-quote-left text-white"></i></div>
+                  <p class="mb-0 mt-2 font-italic">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod 
+                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo."</p>
+                </blockquote><!-- END -->
+              </div>
             </div>
           </div>
         </div>

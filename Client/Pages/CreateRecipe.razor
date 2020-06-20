@@ -4,88 +4,77 @@
 @using System.ComponentModel.DataAnnotations
 @using AmnasKitchen.Shared
 
-    <EditForm EditContext="@MyEditContext" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator />
+<section id="CreateRecipe">
+    <h2>Create Recipe</h2>
+    <hr />
 
-        <div class="form-group w-100">
-            <TelerikTextBox @bind-Value="@recipeForm.Title" Label="Enter Recipe Title" Width="100%"></TelerikTextBox>
-        </div>
+    <div class="row pt-4">
 
-        <div class="form-group w-100">
-            <TelerikDropDownList Data="@categories" TextField="Name" ValueField="Id" @bind-Value="@recipeForm.CategoryId" DefaultText="Choose Category" Width="100%">
-            </TelerikDropDownList>
-        </div>
+        <EditForm EditContext="@MyEditContext" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
 
-        <div class="form-group w-100">
-            <label for="Recipe-Time">Time to prepare</label>
-            <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time" Class="form-control" Width="100%"></TelerikNumericTextBox>
-        </div>
+            <div class="form-group w-100">
+                <TelerikTextBox @bind-Value="@recipeForm.Title" Label="Enter Recipe Title" Width="100%"></TelerikTextBox>
+            </div>
 
-        <div class="form-group w-100">
-            <label for="MealDifficulty">Difficulty level</label>
-            <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" class="form-control" id="MealDifficulty">
-            @for (int i = 0; i < recipeForm.Difficulty; i++)
-            {
-                <i class="fa fa-fire" aria-hidden="true"></i>
-            }
-        </div>
+            <div class="form-group w-100">
+                <TelerikMultiSelect Data="@categories"
+                                    @bind-Value="@recipeForm.SelectedCategoriesIds"
+                                    ValueField="@nameof(Category.Id)"
+                                    TextField="@nameof(Category.Name)"
+                                    Placeholder="Select Categories"
+                                    Width="100%"
+                                    Id="products-multiselect" />
+            </div>
 
-        <div class="form-group w-100">
-            <textarea rows="5" class="form-control w-100" placeholder="Enter Recipe Description" @bind="recipeForm.Description" />
-                      </div>
+            <div class="form-group w-100">
+                <label for="Recipe-Time">Time to prepare</label>
+                <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time" Class="form-control" Width="100%"></TelerikNumericTextBox>
+            </div>
 
-        <div class="mt-4">
-            <ValidationSummary />
-        </div>
+            <div class="form-group w-100">
+                <label for="MealDifficulty">Difficulty level</label>
+                <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" class="form-control" id="MealDifficulty">
+                @for (int i = 0; i < recipeForm.Difficulty; i++)
+                {
+                    <i class="fa fa-fire" aria-hidden="true"></i>
+                }
+            </div>
 
-        <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
-    </EditForm>
+            <div class="form-group w-100">
+                <textarea rows="5" class="form-control w-100" placeholder="Enter Recipe Description" @bind="recipeForm.Description" />
+            </div>
+
+            <div class="mt-4">
+                <ValidationSummary />
+            </div>
+
+            <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
+        </EditForm>
+
+
+
+    </div>
+
+</section>
+
 @code {
     protected EditContext MyEditContext { get; set; }
 
-    RecipeForm recipeForm { get; set; }
+    public RecipeForm recipeForm { get; set; }
 
-    IList<Category> categories;
+    public List<Category> categories = new List<Category>();
 
     protected override async Task OnInitializedAsync()
     {
         recipeForm = new RecipeForm();
         MyEditContext = new EditContext(recipeForm);
-        categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+        categories = await Http.GetFromJsonAsync<List<Category>>("api/Recipe/GetAllCategories");
     }
 
     void HandleValidSubmit()
     {
         Console.WriteLine("OnValidSubmit");
-    }
-
-}
-
-@code
-{
-
-    class RecipeForm
-    {
-        public int CategoryId { get; set; }
-
-        [Required(ErrorMessage = "Enter a Time")]
-        [Range(1, 60)]
-        public int Time { get; set; }
-
-        [Required(ErrorMessage = "Enter a TimeUnit")]
-        public string TimeUnit { get; set; } = "H";
-
-        [Required(ErrorMessage = "Enter difficulty level")]
-        [Range(1, 5)]
-        public int Difficulty { get; set; }
-
-        [Required(ErrorMessage = "Enter servings")]
-        public int Serving { get; set; }
-
-        [Required(ErrorMessage = "Enter a Recipe Title")]
-        public string Title { get; set; }
-
-        public string Description { get; set; }
     }
 
 }

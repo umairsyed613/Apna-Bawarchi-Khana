@@ -9,6 +9,10 @@
    font-family: 'Quirlycues';
    src: url(../fonts/Quirlycues.ttf);
 }
+@font-face {
+  font-family: 'Chewy';
+  src: url(../fonts/Chewy-Regular.ttf);
+}
 
 /*
 ** Base html
@@ -156,11 +160,8 @@ table {
   background-repeat: no-repeat;
   background-image: radial-gradient(rgba(126, 0, 119, 0.15), rgba(126, 0, 119, 0.75)), url("../images/AmnasKitchenBanner.jpg");*/
 }
-#logo h1 {
-  font-family: 'Quirlycues';
-  font-size: 24px;
-  font-weight: normal;
-  color: #f9f9f9;
+.brandText {
+    font-family: 'Chewy';
 }
 
 /*
@@ -256,7 +257,7 @@ table {
   -moz-box-shadow: 0px 0px 0px 2px rgba(0,0,0,0.6), 0px 0px 0px 14px #fff, 0px 0px 0px 18px rgba(0,0,0,0.2), 6px 6px 8px 17px #555;
   box-shadow: 0px 0px 0px 2px rgba(0,0,0,0.6), 0px 0px 0px 14px #fff, 0px 0px 0px 18px rgba(0,0,0,0.2), 6px 6px 8px 17px #555;
 }
-.recipe-info .row {
+.recipe-info-row {
   margin-top: 12px;
   padding-top: 6px;
   padding-bottom: 6px;
@@ -428,4 +429,25 @@ h2 {
         white-space: normal;
         width: 100%;
         z-index: 100;*/
+}
+
+.sliderImg {
+  max-height: 400px;
+}
+
+.blockquote-custom {
+  position: relative;
+  font-size: 1.1rem;
+}
+
+.blockquote-custom-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -20px;
+  left: 30px;
 }

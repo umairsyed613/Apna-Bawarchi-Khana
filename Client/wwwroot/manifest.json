@@ -1,13 +1,13 @@
 {
-  "name": "AmnasKitchen",
-  "short_name": "AmnasKitchen",
+  "name": "ApnaBawarchiKhana",
+  "short_name": "ApnaBawarchiKhana",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#03173d",
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "LogoMakr_2Iy6ya.png",
       "type": "image/png",
       "sizes": "512x512"
     }
