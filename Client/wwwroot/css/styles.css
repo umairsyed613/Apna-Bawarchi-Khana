@@ -231,8 +231,6 @@ table {
 */
   #recipe {
     background-color: #f1f1f1;
-    padding-top: 12px;
-    padding-bottom: 24px;
   }
 #recipe h2 {
   color: #333;
@@ -265,6 +263,9 @@ table {
   -webkit-box-shadow: 0 1px 0 rgba(0,0,0,.15);
   -moz-box-shadow: 0 1px 0 rgba(0,0,0,.15);
   box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+.recipe-info-row-bg {
+  background-color: #f9f9f9 !important;
 }
 .recipe-info i {
   color: #a44c9f;
@@ -417,37 +418,138 @@ h2 {
   padding: 0 0 10px 0;
 }
 
-.slider_text {
+/*.slider_text {
   background: rgba(0,0,0,0.45);
   bottom: 0;
   color: #fff;
   left: 0 !important;
-  right: 0 !important;
+  right: 0 !important;*/
   /* overflow: hidden;
         padding: 2% 3% 3%;
         position: absolute;
         white-space: normal;
         width: 100%;
         z-index: 100;*/
-}
+/*}
 
 .sliderImg {
   max-height: 400px;
-}
+}*/
 
 .blockquote-custom {
   position: relative;
   font-size: 1.1rem;
+  -webkit-box-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -moz-box-shadow: 0 1px 0 rgba(0,0,0,.15);
+  box-shadow: 0 1px 0 rgba(0,0,0,.15);
 }
 
 .blockquote-custom-icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: -20px;
+  top: -15px;
   left: 30px;
 }
+
+/*
+////////////////////////////////////////////////////////////////////////////////////////
+    Main Slider Css Start
+*/
+
+
+.slider {
+  color: #2d2d2d;
+  font-family: "Source Sans Pro",Arial;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  display: block;
+  font-size: 0;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.slider__slide {
+  color: #2d2d2d;
+  font-family: "Source Sans Pro",Arial;
+  font-size: 0;
+  white-space: nowrap;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  height: 280px;
+  width: 500px;
+}
+
+.slider__text {
+  font-size: 0;
+  cursor: pointer;
+  font-family: "Source Sans Pro",Arial;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+  background: rgba(0,0,0,0.45);
+  bottom: 0;
+  color: #fff;
+  overflow: hidden;
+  padding: 2% 3% 3%;
+  position: absolute;
+  white-space: normal;
+  width: 100%;
+  z-index: 100;
+  min-height: 5.5rem;
+}
+
+.slider__text h3 {
+  cursor: pointer;
+  font-family: "Source Sans Pro",Arial;
+  color: #fff;
+  white-space: normal;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+  font-weight: normal;
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.slider__description {
+  cursor: pointer;
+  font-family: "Source Sans Pro",Arial;
+  color: #fff;
+  white-space: normal;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+  font-size: .875rem;
+  clear: both;
+  display: block;
+  float: left;
+  margin: 0;
+}
+
+.slider__photo {
+  bottom: 0;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+/*
+    Main Slider Css End
+*/
