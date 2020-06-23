@@ -456,6 +456,23 @@ h2 {
   left: 30px;
 }
 
+.install-prompt {
+  width: 360px;
+  height: 60px;
+  padding: 15px 20px;
+  box-sizing: border-box;
+  bottom: 63px;
+  left: auto;
+  right: 20px;
+  border: 0;
+  border-radius: 2px;
+  font-family: "Roboto",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: lighter;
+  color: #fff;
+  background-color: #818a91;
+  z-index: 11000
+}
 
 /*
 ////////////////////////////////////////////////////////////////////////////////////////

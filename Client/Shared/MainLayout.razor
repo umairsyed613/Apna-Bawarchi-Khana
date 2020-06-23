@@ -8,6 +8,18 @@
 
   <section id="sectionBody">
     <div class="container-fluid">
+      
+      @if (Installable)
+      {
+        <div class="bg-ak border rounded shadow fixed-bottom d-flex align-items-center justify-content-between install-prompt">
+          <span>Install this app?</span>
+          <span>
+            <button class="btn btn-light btn-sm mx-2" @onclick="@InstallClicked">Install</button>
+                    <button class="btn btn-outline-light btn-sm" @onclick="@(()=>Installable=false)">Cancel </button>
+                            </span>
+                            </div>
+      }
+
       @Body
     </div>
   </section>
@@ -43,3 +55,26 @@
     </div>
   </footer>
 </TelerikRootComponent>
+
+@code{
+
+  [Inject] IJSRuntime JSRuntime { get; set; } // needs to be here not as a @inject directive
+  static bool Installable = false;
+  static Action ml;
+
+  [JSInvokable("InstallPwaPrompt")]
+  //a named method so that it is easy to call from JS Interop
+  public static Task InstallPwaPrompt()
+  {
+    Installable = true;
+    ml.Invoke();
+    return Task.CompletedTask;
+  }
+
+  async void InstallClicked(MouseEventArgs args)
+  {
+    Installable = false;
+    await JSRuntime.InvokeAsync<object>("OnPwaInstallClick");
+  }
+
+}
