@@ -1,25 +1,26 @@
 
-$(document).ready(function () {
+//$(document).ready(function () {
 
-});
-
-function InitSlider() {
-
-  var checkExist = setInterval(function () {
-    if ($('#mycontentslider').length) {
-
-      $("#mycontentslider").lightSlider({
-        loop: true,
-        item: 3,
-        keyPress: true
-      });
+//});
 
 
-      clearInterval(checkExist);
-    }
-  }, 100);
+//function InitSlider() {
 
-}
+//  var checkExist = setInterval(function () {
+//    if ($('#mycontentslider').length) {
+
+//      $("#mycontentslider").lightSlider({
+//        loop: true,
+//        item: 3,
+//        keyPress: true
+//      });
+
+
+//      clearInterval(checkExist);
+//    }
+//  }, 100);
+
+//}
 
 function SetNavBarActive() {
   var url = window.location;
