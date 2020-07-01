@@ -39,14 +39,12 @@
 @code {
   [Inject] IJSRuntime JSRuntime { get; set; } // needs to be here not as a @inject directive
   static bool Installable = false;
-  static Action ml;
 
   [JSInvokable("InstallPwaPrompt")]
   //a named method so that it is easy to call from JS Interop
   public static Task InstallPwaPrompt()
   {
     Installable = true;
-    ml.Invoke();
     return Task.CompletedTask;
   }
 
