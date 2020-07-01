@@ -15,6 +15,21 @@
     height: 190px;
     width: 340px;
   }
+
+  .slider__description {
+    cursor: pointer;
+    font-family: "Source Sans Pro",Arial;
+    color: #fff;
+    white-space: normal;
+    box-sizing: border-box;
+    outline: none !important;
+    -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+    font-size: .700rem;
+    clear: both;
+    display: block;
+    float: left;
+    margin: 0;
+  }
 }
 
 /*Small devices (landscape phones, 576px and up)*/
@@ -32,6 +47,21 @@
   .slider .slider__slide {
     height: 246px;
     width: 440px;
+  }
+
+  .slider__description {
+    cursor: pointer;
+    font-family: "Source Sans Pro",Arial;
+    color: #fff;
+    white-space: normal;
+    box-sizing: border-box;
+    outline: none !important;
+    -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+    font-size: .700rem;
+    clear: both;
+    display: block;
+    float: left;
+    margin: 0;
   }
 }
 
