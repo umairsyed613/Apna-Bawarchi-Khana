@@ -7,12 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 
-using AmnasKitchen.Server.Database;
-using AmnasKitchen.Server.Services;
+using ApnaBawarchiKhana.Server.Database;
+using ApnaBawarchiKhana.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace AmnasKitchen.Server
+namespace ApnaBawarchiKhana.Server
 {
     public class Startup
     {
@@ -28,7 +28,7 @@ namespace AmnasKitchen.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AmnasKitchenDbContext>(options => options.UseSqlServer(GetDbConnectionString(Configuration)), ServiceLifetime.Singleton);
+            services.AddDbContext<ApnaBawarchiKhanaDbContext>(options => options.UseSqlServer(GetDbConnectionString(Configuration)), ServiceLifetime.Singleton);
 
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddRazorPages();

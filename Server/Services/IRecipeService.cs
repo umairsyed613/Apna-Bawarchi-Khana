@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using AmnasKitchen.Shared;
+using ApnaBawarchiKhana.Shared;
 
-namespace AmnasKitchen.Server.Services
+namespace ApnaBawarchiKhana.Server.Services
 {
     public interface IRecipeService
     {

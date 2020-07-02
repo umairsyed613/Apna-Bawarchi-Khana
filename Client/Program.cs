@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System;
 
-namespace AmnasKitchen.Client
+namespace ApnaBawarchiKhana.Client
 {
     public class Program
     {

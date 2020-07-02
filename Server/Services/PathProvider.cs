@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace AmnasKitchen.Server.Services
+namespace ApnaBawarchiKhana.Server.Services
 {
     public interface IPathProvider
     {

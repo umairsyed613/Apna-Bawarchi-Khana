@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmnasKitchen.Server", "Server\AmnasKitchen.Server.csproj", "{9620759F-68FB-4EFF-BC1C-6FD3BAB81632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApnaBawarchiKhana.Server", "Server\ApnaBawarchiKhana.Server.csproj", "{9620759F-68FB-4EFF-BC1C-6FD3BAB81632}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmnasKitchen.Client", "Client\AmnasKitchen.Client.csproj", "{84286432-7FC9-408D-BA6B-7405E2F0790C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApnaBawarchiKhana.Client", "Client\ApnaBawarchiKhana.Client.csproj", "{84286432-7FC9-408D-BA6B-7405E2F0790C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmnasKitchen.Shared", "Shared\AmnasKitchen.Shared.csproj", "{EB9FD073-E942-4BAC-828D-AA5D153B1C2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApnaBawarchiKhana.Shared", "Shared\ApnaBawarchiKhana.Shared.csproj", "{EB9FD073-E942-4BAC-828D-AA5D153B1C2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

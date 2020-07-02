@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AmnasKitchen.Server.Helper
+namespace ApnaBawarchiKhana.Server.Helper
 {
     public class ImageResizer
     {

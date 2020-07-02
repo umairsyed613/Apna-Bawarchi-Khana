@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using AmnasKitchen.Server.Database;
-using AmnasKitchen.Shared;
+using ApnaBawarchiKhana.Server.Database;
+using ApnaBawarchiKhana.Shared;
 
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +11,15 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace AmnasKitchen.Server.Controllers
+namespace ApnaBawarchiKhana.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly AmnasKitchenDbContext _dbContext;
+        private readonly ApnaBawarchiKhanaDbContext _dbContext;
 
-        public UsersController(AmnasKitchenDbContext dbContext)
+        public UsersController(ApnaBawarchiKhanaDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

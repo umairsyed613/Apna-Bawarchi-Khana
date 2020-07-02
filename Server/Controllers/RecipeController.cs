@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AmnasKitchen.Server.Services;
-using AmnasKitchen.Shared;
+using ApnaBawarchiKhana.Server.Services;
+using ApnaBawarchiKhana.Shared;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AmnasKitchen.Server.Controllers
+namespace ApnaBawarchiKhana.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

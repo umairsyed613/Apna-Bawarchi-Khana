@@ -24,7 +24,7 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\AmnasKitchen.Shared.csproj" />
+    <ProjectReference Include="..\Shared\ApnaBawarchiKhana.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Telerik.Blazor">

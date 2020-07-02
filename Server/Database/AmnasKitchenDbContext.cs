@@ -1,16 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using AmnasKitchen.Shared;
+using ApnaBawarchiKhana.Shared;
 
-namespace AmnasKitchen.Server.Database
+namespace ApnaBawarchiKhana.Server.Database
 {
-    public partial class AmnasKitchenDbContext : DbContext
+    public partial class ApnaBawarchiKhanaDbContext : DbContext
     {
-        public AmnasKitchenDbContext()
+        public ApnaBawarchiKhanaDbContext()
         {
         }
 
-        public AmnasKitchenDbContext(DbContextOptions<AmnasKitchenDbContext> options) : base(options)
+        public ApnaBawarchiKhanaDbContext(DbContextOptions<ApnaBawarchiKhanaDbContext> options) : base(options)
         {
         }
 

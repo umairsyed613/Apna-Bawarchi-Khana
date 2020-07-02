@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "AmnasKitchen.Client": {
+    "ApnaBawarchiKhana.Client": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

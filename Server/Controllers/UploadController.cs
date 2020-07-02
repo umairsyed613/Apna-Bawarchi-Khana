@@ -4,12 +4,12 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-using AmnasKitchen.Server.Services;
+using ApnaBawarchiKhana.Server.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AmnasKitchen.Server.Controllers
+namespace ApnaBawarchiKhana.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class UploadController : Controller

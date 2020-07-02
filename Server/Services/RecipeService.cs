@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using AmnasKitchen.Server.Database;
-using AmnasKitchen.Shared;
+using ApnaBawarchiKhana.Server.Database;
+using ApnaBawarchiKhana.Shared;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace AmnasKitchen.Server.Services
+namespace ApnaBawarchiKhana.Server.Services
 {
     public class RecipeService : IRecipeService
     {
-        private readonly AmnasKitchenDbContext _dbContext;
+        private readonly ApnaBawarchiKhanaDbContext _dbContext;
         private readonly IMemoryCache _memoryCache;
         private readonly IAkImageFileService akImageFileService;
 
-        public RecipeService(IMemoryCache memoryCache, AmnasKitchenDbContext dbContext, IAkImageFileService akImageFileService)
+        public RecipeService(IMemoryCache memoryCache, ApnaBawarchiKhanaDbContext dbContext, IAkImageFileService akImageFileService)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace AmnasKitchen.Shared
+namespace ApnaBawarchiKhana.Shared
 {
     public class CreateCategoryFormData
     {

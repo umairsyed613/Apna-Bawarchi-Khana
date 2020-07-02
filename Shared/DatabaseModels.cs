@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace AmnasKitchen.Shared
+namespace ApnaBawarchiKhana.Shared
 {
     [Table("sa_amna.Category")]
     public partial class Category

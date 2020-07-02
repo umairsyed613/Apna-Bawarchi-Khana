@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmnasKitchen.Shared
+namespace ApnaBawarchiKhana.Shared
 {
     public enum CacheKeys
     {

@@ -1,6 +1,6 @@
 ﻿function showAddToHomeScreen() {
     // These assembly and method names must match the app name and the method in the MainLayout.razor
-    const blazorAssembly = 'AmnasKitchen.Client';
+    const blazorAssembly = 'ApnaBawarchiKhana.Client';
     const blazorInstallMethod = 'InstallPwaPrompt';
     DotNet.invokeMethodAsync(blazorAssembly, blazorInstallMethod)
         .then(function () { }, function (er) { setTimeout(showAddToHomeScreen, 1000); });

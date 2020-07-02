@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\AmnasKitchen.Client.csproj" />
-    <ProjectReference Include="..\Shared\AmnasKitchen.Shared.csproj" />
+    <ProjectReference Include="..\Client\ApnaBawarchiKhana.Client.csproj" />
+    <ProjectReference Include="..\Shared\ApnaBawarchiKhana.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AmnasKitchen.Server.Services
+namespace ApnaBawarchiKhana.Server.Services
 {
     public interface IAkImageFileService
     {
