@@ -30,6 +30,24 @@
     float: left;
     margin: 0;
   }
+
+  .install-prompt {
+    width: 300px;
+    height: 60px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    bottom: 63px;
+    left: auto;
+    right: 20px;
+    border: 0;
+    border-radius: 2px;
+    font-family: "Roboto",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: lighter;
+    color: #fff;
+    background-color: #818a91;
+    z-index: 11000
+  }
 }
 
 /*Small devices (landscape phones, 576px and up)*/
@@ -63,13 +81,31 @@
     float: left;
     margin: 0;
   }
+
+  .install-prompt {
+    width: 300px;
+    height: 60px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    bottom: 63px;
+    left: auto;
+    right: 20px;
+    border: 0;
+    border-radius: 2px;
+    font-family: "Roboto",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: lighter;
+    color: #fff;
+    background-color: #818a91;
+    z-index: 11000
+  }
 }
 
 /* Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) and (max-width: 991.98px) {
 
   .recipe-itemSize {
-    max-width: 320px;
+    max-width: 360px;
   }
   
   .container-fluid {
