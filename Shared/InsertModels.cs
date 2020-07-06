@@ -30,7 +30,7 @@ namespace ApnaBawarchiKhana.Shared
         public int Time { get; set; }
 
         [Required(ErrorMessage = "Enter a TimeUnit")]
-        public string TimeUnit { get; set; } = "H";
+        public string TimeUnit { get; set; }
 
         [Range(1, 5, ErrorMessage = "Choose difficulty level")]
         public int Difficulty { get; set; }
@@ -42,5 +42,11 @@ namespace ApnaBawarchiKhana.Shared
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        [MinLength(1, ErrorMessage = "Please Add Ingredients")]
+        public List<Ingredient> Ingredients { get; set; }
+
+        [MinLength(1, ErrorMessage = "Please Add Directions")]
+        public List<Direction> Directions { get; set; }
     }
 }

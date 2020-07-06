@@ -1,8 +1,10 @@
 ﻿@page "/createrecipe"
 
+@inject AbkFetchService AbkFetchService
 @inject HttpClient Http
-@using System.ComponentModel.DataAnnotations
 @using ApnaBawarchiKhana.Shared
+@inject IToastService toastService
+
 
 <section id="CreateRecipe">
     <h2>Create Recipe</h2>
@@ -27,14 +29,21 @@
                                     Id="products-multiselect" />
             </div>
 
-            <div class="form-group w-100">
-                <label for="Recipe-Time">Time to prepare</label>
-                <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time" Class="form-control" Width="100%"></TelerikNumericTextBox>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Recipe-Time">Time to prepare</label>
+                    <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time"></TelerikNumericTextBox>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="timeUnit">Time to prepare Unit</label>
+                    <TelerikDropDownList @bind-Value="@recipeForm.TimeUnit" Data="@TimeUnits" DefaultText="Select Time Unit" Id="timeUnit">
+                    </TelerikDropDownList>
+                </div>
             </div>
 
             <div class="form-group w-100">
                 <label for="MealDifficulty">Difficulty level</label>
-                <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" class="form-control" id="MealDifficulty">
+                <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" step="1" class="form-control-range" id="MealDifficulty">
                 @for (int i = 0; i < recipeForm.Difficulty; i++)
                 {
                     <i class="fa fa-fire" aria-hidden="true"></i>
@@ -43,6 +52,49 @@
 
             <div class="form-group w-100">
                 <textarea rows="5" class="form-control w-100" placeholder="Enter Recipe Description" @bind="recipeForm.Description" />
+            </div>
+
+            <div class="form-group w-100">
+                <label>Add Ingredients</label>
+                <TelerikGrid Data="@recipeForm.Ingredients" Height="200px" EditMode="GridEditMode.Popup" OnUpdate="@UpdateHandler"
+                             OnDelete="@DeleteHandler"
+                             OnCreate="@CreateHandler">
+                    <GridColumns>
+                        <GridColumn Field="@(nameof(Ingredient.Quantity))" Title="Quantity" />
+                        <GridColumn Field="@(nameof(Ingredient.StepNr))" Title="StepNr" />
+                        <GridColumn Field="@(nameof(Ingredient.Description))" Title="Description" />
+                        <GridCommandColumn>
+                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Save</GridCommandButton>
+                            <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
+                            <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
+                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                        </GridCommandColumn>
+                    </GridColumns>
+                    <GridToolBar>
+                        <GridCommandButton Command="Add" Icon="add">Add Ingredient</GridCommandButton>
+                    </GridToolBar>
+                </TelerikGrid>
+            </div>
+
+            <div class="form-group w-100">
+                <label>Add Directions</label>
+                <TelerikGrid Data="@recipeForm.Directions" Height="200px" EditMode="GridEditMode.Popup" OnUpdate="@DirectionUpdateHandler"
+                             OnDelete="@DirectionDeleteHandler"
+                             OnCreate="@DirectionCreateHandler">
+                    <GridColumns>
+                        <GridColumn Field="@(nameof(Direction.StepNr))" Title="StepNr" />
+                        <GridColumn Field="@(nameof(Direction.Step))" Title="Step" />
+                        <GridCommandColumn>
+                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Save</GridCommandButton>
+                            <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
+                            <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
+                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                        </GridCommandColumn>
+                    </GridColumns>
+                    <GridToolBar>
+                        <GridCommandButton Command="Add" Icon="add">Add Direction</GridCommandButton>
+                    </GridToolBar>
+                </TelerikGrid>
             </div>
 
             <div class="mt-4">
@@ -65,11 +117,21 @@
 
     public List<Category> categories = new List<Category>();
 
+    public List<string> TimeUnits { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        TimeUnits = new List<string>
+                {
+                            "H",
+                            "M"
+                        };
+
         recipeForm = new RecipeForm();
+        recipeForm.Ingredients = new List<Ingredient>();
+        recipeForm.Directions = new List<Direction>();
         MyEditContext = new EditContext(recipeForm);
-        categories = await Http.GetFromJsonAsync<List<Category>>("api/Recipe/GetAllCategories");
+        categories = (await AbkFetchService.GetCategories())?.ToList();
     }
 
     void HandleValidSubmit()
@@ -77,4 +139,98 @@
         Console.WriteLine("OnValidSubmit");
     }
 
+    public void UpdateHandler(GridCommandEventArgs args)
+    {
+        var ingredient = (Ingredient)args.Item;
+
+        var matchingItem = recipeForm.Ingredients.FirstOrDefault(c => c.StepNr == ingredient.StepNr);
+
+        if (matchingItem != null)
+        {
+            matchingItem.StepNr = ingredient.StepNr;
+            matchingItem.Quantity = ingredient.Quantity;
+            matchingItem.Description = ingredient.Description;
+
+            toastService.ShowInfo("Item updated in the grid");
+        }
+    }
+
+    public void DeleteHandler(GridCommandEventArgs args)
+    {
+        var ingredient = (Ingredient)args.Item;
+
+        recipeForm.Ingredients.Remove(ingredient);
+
+        toastService.ShowError("Item Deleted From Grid");
+    }
+
+    public void CreateHandler(GridCommandEventArgs args)
+    {
+        var ingredient = (Ingredient)args.Item;
+
+
+        if (recipeForm.Ingredients.Any(a => a.StepNr == ingredient.StepNr))
+        {
+            toastService.ShowError("Ingredient with same step number already exists!");
+            return;
+        }
+
+        if (ingredient.StepNr <= 0)
+        {
+            toastService.ShowError("Ingredient step number cannot be 0 or below!");
+            return;
+        }
+
+        recipeForm.Ingredients.Add(ingredient);
+
+
+        toastService.ShowInfo("Item added to the Grid");
+    }
+
+    public void DirectionUpdateHandler(GridCommandEventArgs args)
+    {
+        var direction = (Direction)args.Item;
+
+        var matchingItem = recipeForm.Directions.FirstOrDefault(c => c.StepNr == direction.StepNr);
+
+        if (matchingItem != null)
+        {
+            matchingItem.StepNr = direction.StepNr;
+            matchingItem.Step = direction.Step;
+
+            toastService.ShowInfo("Item updated in the grid");
+        }
+    }
+
+    public void DirectionDeleteHandler(GridCommandEventArgs args)
+    {
+        var direction = (Direction)args.Item;
+
+        recipeForm.Directions.Remove(direction);
+
+        toastService.ShowError("Item Deleted From Grid");
+    }
+
+    public void DirectionCreateHandler(GridCommandEventArgs args)
+    {
+        var direction = (Direction)args.Item;
+
+
+        if (recipeForm.Directions.Any(a => a.StepNr == direction.StepNr))
+        {
+            toastService.ShowError("direction with same step number already exists!");
+            return;
+        }
+
+        if (direction.StepNr <= 0)
+        {
+            toastService.ShowError("Ingredient step number cannot be 0 or below!");
+            return;
+        }
+
+        recipeForm.Directions.Add(direction);
+
+
+        toastService.ShowInfo("Item added to the Grid");
+    }
 }

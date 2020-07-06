@@ -1,9 +1,6 @@
 ﻿
 @using ApnaBawarchiKhana.Shared
-@inject HttpClient Http
-@inject NavigationManager NavigationManager
-<!-- Recipes Categories
-  ======================= -->
+@inject AbkFetchService AbkFetchService
 
 <style>
     .btn-sq-lg {
@@ -55,14 +52,14 @@
     </div>
     <div id="multiCollapseExample1">
 
-        @if (categories == null)
+        @if (Categories == null)
         {
             <p><em>Loading...</em></p>
         }
         else
         {
             <div class="row">
-                @foreach (var category in categories)
+                @foreach (var category in Categories)
                 {
                     <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
                         <a href="#" class="btn btn-sq-lg btn-ak-primary mb-2">
@@ -89,13 +86,14 @@
 
 @code
 {
+    public IList<Category> Categories { get; set; }
 
-    IList<Category> categories;
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
 
-        categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+        Categories = await AbkFetchService.GetCategories();
     }
 
 }

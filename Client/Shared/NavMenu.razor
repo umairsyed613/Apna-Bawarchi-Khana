@@ -1,6 +1,29 @@
 ﻿@inject NavigationManager navigationManager
 @inject IJSRuntime JSRuntime
+@using ApnaBawarchiKhana.Shared
 
+@inject IToastService toastService
+@inject AbkFetchService AbkFetchService
+<style>
+
+    .cat-drpDown-item {
+        display: inline-block;
+        padding-top: .3125rem;
+        padding-bottom: .3125rem;
+        margin-right: 1rem;
+        line-height: inherit;
+        white-space: nowrap;
+        padding-left: 1rem !important;
+    }
+    .dropdown-item.active, .dropdown-item:active {
+            background-color: #a44c9f !important;
+        }
+
+    .cat-drpDown-img {
+        width: 30px;
+        height: 30px;
+    }
+    </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-ak justify-content-between">
     <a class="navbar-brand brandText" href="/">
         <img src="images/LogoMakr_5qCGuM.png" alt="logo" height="24" class="d-inline-block align-top" />
@@ -24,10 +47,26 @@
                     Categories
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/">Action</a>
-                    <a class="dropdown-item" href="/">Another action</a>
+
+                    @if (Categories == null || !Categories.Any())
+                    {
+                        <p><em>Loading...</em></p>
+                    }
+                    else
+                    {
+
+                        @foreach (var category in Categories)
+                        {
+                            
+                            <a class="dropdown-item cat-drpDown-item d-flex align-items-center" href="/">
+                    
+                                <div class="rounded bg-ak cat-drpDown-img d-flex justify-content-center align-items-center mr-2">
+                                    <img src="data:image/bmp;base64, @(Convert.ToBase64String(category.UploadedImage?.ImageData))" alt="@($"{category.Name}")" width="24" height="24" />
+                                </div> @category.Name</a>
+                        }
+                    }
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/">Something else here</a>
+                    <a class="dropdown-item" href="/">Show All</a>
                 </div>
             </li>
         </ul>
@@ -40,11 +79,22 @@
 
 @code
 {
+    public IList<Category> Categories { get; set; } = new List<Category>();
+
     protected override async Task OnInitializedAsync()
     {
-        navigationManager.LocationChanged += OnLocationChanges;
-
         await base.OnInitializedAsync();
+
+        try
+        {
+            Categories = await AbkFetchService.GetCategories();
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError(e.Message);
+        }
+
+        navigationManager.LocationChanged += OnLocationChanges;
     }
 
     async void OnLocationChanges(object sender, LocationChangedEventArgs e)
