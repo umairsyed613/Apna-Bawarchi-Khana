@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -63,30 +64,82 @@ namespace ApnaBawarchiKhana.Server.Services
                 throw new ArgumentNullException(nameof(recipeFormData));
             }
 
-            var recipe = await _dbContext.Recipes.AddAsync(new Recipe
-                                                               {
-                                                                   Title = recipeFormData.Recipe.Title,
-                                                                   Description = recipeFormData.Recipe.Description,
-                                                                   Difficulty = recipeFormData.Recipe.Difficulty,
-                                                                   Serving = recipeFormData.Recipe.Serving,
-                                                                   Time = recipeFormData.Recipe.Time,
-                                                                   TimeUnit = recipeFormData.Recipe.TimeUnit,
-                                                                   CreatedAt = DateTime.UtcNow
-                                                               });
-
-            if (recipeFormData.Images.Any())
+            if (!recipeFormData.Recipe.SelectedCategoriesIds.Any())
             {
-                foreach (var image in recipeFormData.Images)
-                {
-                    if (!string.IsNullOrEmpty(image))
-                    {
-                        var imageData = await akImageFileService.GetFileAsBytes(image);
-                        var insertedImageId = await StoreImageInDb(imageData);
+                throw new InvalidOperationException("Cannot add recipe without categories");
+            }
 
-                        await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
+            using var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
+
+            try
+            {
+                var recipe = await _dbContext.Recipes.AddAsync(
+                                 new Recipe
+                                     {
+                                         Title = recipeFormData.Recipe.Title,
+                                         Description = recipeFormData.Recipe.Description,
+                                         Difficulty = recipeFormData.Recipe.Difficulty,
+                                         Serving = recipeFormData.Recipe.Serving,
+                                         Time = recipeFormData.Recipe.Time,
+                                         TimeUnit = recipeFormData.Recipe.TimeUnit,
+                                         CreatedAt = DateTime.UtcNow
+                                     });
+
+                await _dbContext.SaveChangesAsync();
+
+
+                foreach (var catId in recipeFormData.Recipe.SelectedCategoriesIds)
+                {
+                    await _dbContext.RecipeCategories.AddAsync(new RecipeCategory { CategoryId = catId, RecipeId = recipe.Entity.Id });
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                if (recipeFormData.Recipe.Ingredients != null && recipeFormData.Recipe.Ingredients.Any())
+                {
+                    foreach (var ingredient in recipeFormData.Recipe.Ingredients.OrderBy(o => o.StepNr))
+                    {
+                        await _dbContext.Ingredients.AddAsync(
+                            new Ingredient
+                                {
+                                    StepNr = ingredient.StepNr, Description = ingredient.Description, Quantity = ingredient.Quantity, RecipeId = recipe.Entity.Id
+                                });
                     }
 
+                    await _dbContext.SaveChangesAsync();
                 }
+
+                if (recipeFormData.Recipe.Directions != null && recipeFormData.Recipe.Directions.Any())
+                {
+                    foreach (var direction in recipeFormData.Recipe.Directions.OrderBy(o => o.StepNr))
+                    {
+                        await _dbContext.Directions.AddAsync(new Direction { StepNr = direction.StepNr, Step = direction.Step, RecipeId = recipe.Entity.Id });
+                    }
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                if (recipeFormData.Images != null && recipeFormData.Images.Any())
+                {
+                    foreach (var image in recipeFormData.Images)
+                    {
+                        if (!string.IsNullOrEmpty(image))
+                        {
+                            var imageData = await akImageFileService.GetFileAsBytes(image);
+                            var insertedImageId = await StoreImageInDb(imageData);
+                            await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
+                        }
+                    }
+
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+
+                await transaction.RollbackAsync();
+                 throw;
             }
         }
 
@@ -111,11 +164,8 @@ namespace ApnaBawarchiKhana.Server.Services
             }
 
             categoryFormData.Category.ImageId = insertedImageId;
-
             await _dbContext.Categories.AddAsync(categoryFormData.Category);
-
             await _dbContext.SaveChangesAsync();
-
             _memoryCache.Remove(CacheKeys.AllCategories);
         }
 

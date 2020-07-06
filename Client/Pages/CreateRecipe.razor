@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @using ApnaBawarchiKhana.Shared
 @inject IToastService toastService
-
+@inject NavigationManager NavigationManager
 
 <section id="CreateRecipe">
     <h2>Create Recipe</h2>
@@ -40,14 +40,26 @@
                     </TelerikDropDownList>
                 </div>
             </div>
+            <div class="form-group w-100">
+                <label for="MealServing">Serving (@recipeForm.Serving)</label>
+                <input type="range" min="1" max="150" @bind="@recipeForm.Serving" class="form-control-range" id="MealServing">
+            </div>
 
             <div class="form-group w-100">
-                <label for="MealDifficulty">Difficulty level</label>
-                <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" step="1" class="form-control-range" id="MealDifficulty">
-                @for (int i = 0; i < recipeForm.Difficulty; i++)
-                {
-                    <i class="fa fa-fire" aria-hidden="true"></i>
-                }
+                <label for="MealDifficulty">Difficulty level (@recipeForm.Difficulty)</label>
+                <input type="range" min="1" max="5" @bind="@recipeForm.Difficulty" class="form-control-range" id="MealDifficulty">
+
+                <div class="diffbar mb-2">
+
+                    @if (recipeForm.Difficulty >= 1 && recipeForm.Difficulty <= 5)
+                    {
+                        <div id="lvl-@(recipeForm.Difficulty)" class="difflvl lvl-@(recipeForm.Difficulty)"></div>
+                    }
+                    else
+                    {
+                        <div id="lvl-1" class="difflvl lvl-1"></div>
+                    }
+                </div>
             </div>
 
             <div class="form-group w-100">
@@ -97,11 +109,20 @@
                 </TelerikGrid>
             </div>
 
+
+            <div class="form-group w-100">
+                <label>Upload Recipe Images</label>
+                <TelerikUpload @ref="@UploadRef" Multiple="false" SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl" OnUpload="@OnUploadHandler" OnRemove="@onRemoveHandler"
+                               OnSuccess="@OnSuccessHandler"
+                               AllowedExtensions="@( new List<string>() { ".jpg", ".png", ".jpeg" } )"
+                               MaxFileSize="2097152" MinFileSize="1000" />
+            </div>
+
             <div class="mt-4">
                 <ValidationSummary />
             </div>
 
-            <TelerikButton ButtonType="@ButtonType.Submit">Submit</TelerikButton>
+            <TelerikButton ButtonType="@ButtonType.Submit">Create Recipe</TelerikButton>
         </EditForm>
 
 
@@ -115,28 +136,64 @@
 
     public RecipeForm recipeForm { get; set; }
 
+    public List<string> ImagesUrls { get; set; }
+
     public List<Category> categories = new List<Category>();
 
     public List<string> TimeUnits { get; set; }
 
+    public string SaveUrl => ToAbsoluteUrl("api/upload/save");
+    public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
+    private static readonly string pathToIcons = "/images/tempupload/";
+
+    Telerik.Blazor.Components.TelerikUpload UploadRef { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         TimeUnits = new List<string>
-                {
+    {
                             "H",
                             "M"
                         };
 
+        ImagesUrls = new List<string>();
+
         recipeForm = new RecipeForm();
         recipeForm.Ingredients = new List<Ingredient>();
         recipeForm.Directions = new List<Direction>();
+        recipeForm.Difficulty = 1;
+        recipeForm.Serving = 1;
+
+
         MyEditContext = new EditContext(recipeForm);
         categories = (await AbkFetchService.GetCategories())?.ToList();
     }
 
-    void HandleValidSubmit()
+    async Task HandleValidSubmit()
     {
-        Console.WriteLine("OnValidSubmit");
+        if (!recipeForm.SelectedCategoriesIds.Any())
+        {
+            toastService.ShowError("Please choose categories the recipe belongs to!");
+            return;
+        }
+
+        var recipeFormData = new CreateRecipeFormData()
+        {
+            Recipe = recipeForm,
+            Images = ImagesUrls
+        };
+
+        var response = await Http.PostAsJsonAsync("api/Recipe/CreateRecipe", recipeFormData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Recipe has been created sucessfully");
+        }
+        else
+        {
+            toastService.ShowError("Failed to Create Recipe");
+            ImagesUrls = new List<string>();
+        }
     }
 
     public void UpdateHandler(GridCommandEventArgs args)
@@ -233,4 +290,41 @@
 
         toastService.ShowInfo("Item added to the Grid");
     }
+
+    public string ToAbsoluteUrl(string url)
+    {
+        return $"{NavigationManager.BaseUri}{url}";
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    void OnUploadHandler(UploadEventArgs e)
+    {
+        e.RequestData.Add("path", pathToIcons);
+    }
+
+    void onRemoveHandler(UploadEventArgs e)
+    {
+        e.RequestData.Add("path", pathToIcons);
+
+        foreach (var f in e.Files)
+        {
+            var toRemove = ImagesUrls.FirstOrDefault(w => w.EndsWith(f.Name));
+            if (!string.IsNullOrWhiteSpace(toRemove))
+            {
+                ImagesUrls.Remove(toRemove);
+            }
+        }
+    }
+
+    void OnSuccessHandler(UploadSuccessEventArgs e)
+    {
+        var actionText = e.Operation == UploadOperationType.Upload ? "uploaded" : "removed";
+
+        foreach (var file in e.Files)
+        {
+            ImagesUrls.Add(pathToIcons + file.Name);
+        }
+    }
+
 }

@@ -15,9 +15,7 @@ namespace ApnaBawarchiKhana.Shared
     public class CreateRecipeFormData
     {
         public RecipeForm Recipe { get; set; }
-
-        public List<int> CategoryIds { get; set; }
-
+        
         public List<string> Images { get; set; }
     }
 

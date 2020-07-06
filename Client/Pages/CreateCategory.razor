@@ -68,9 +68,8 @@
     bool WindowVisible = true;
     public string SaveUrl => ToAbsoluteUrl("api/upload/save");
     public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
-
     private static readonly string pathToIcons = "/images/tempupload/";
-
+    string SuccessMessage = string.Empty;
     Telerik.Blazor.Components.TelerikUpload UploadRef { get; set; }
 
     protected EditContext MyEditContext { get; set; }
@@ -89,8 +88,6 @@
     {
         return $"{NavigationManager.BaseUri}{url}";
     }
-
-    string SuccessMessage = string.Empty;
 
     async Task HandleValidSubmit()
     {
