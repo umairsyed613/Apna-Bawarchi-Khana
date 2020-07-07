@@ -1,0 +1,91 @@
+﻿@page "/recipebycategory/{catId}"
+@page "/recipebycategory/{catId}/{catName}"
+
+@using ApnaBawarchiKhana.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+
+<section id="items" class="rounded mt-3 pt-2 pb-4 mb-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>@catName Recipes</h2>
+        </div>
+    </div>
+    <hr />
+
+
+    @if (Recipes == null || !Recipes.Any())
+    {
+        <div class="d-flex flex-row w-100 justify-content-center mb-5">
+            <div class="loader"></div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex align-content-center justify-content-start flex-wrap">
+            @foreach (var recipe in Recipes)
+            {
+                <div class="recipe-item card m-2 recipe-itemSize">
+                    <a href="/viewrecipe/@recipe.Id">
+                        @if (recipe.RecipeImages.Any())
+                        {
+                            <img src="data:image/bmp;base64, @(Convert.ToBase64String(recipe.RecipeImages.First().UploadedImage?.ImageData))" alt="@($"{recipe.Title}")" class="card-img-top" />
+                        }
+                        @*<img src="images/bbq-pork-ribs.jpg" class="card-img-top" alt="Barbecue Ribs">*@
+                    </a>
+                    <div class="card-body">
+                        <div class="card-text p-2">
+                            <div class="d-flex flex-row mb-2">
+                                <div class="flex-fill text-truncate roboto-400">@recipe.Title</div>
+                                <div>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-row flex-fill">
+                                <span class="text-muted text-truncate roboto-300">@recipe.Description</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</section>
+
+
+@code {
+
+    [Parameter]
+    public string catId { get; set; }
+
+    [Parameter]
+    public string catName { get; set; }
+
+    IEnumerable<Recipe> Recipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (string.IsNullOrWhiteSpace(catId))
+        {
+            NavigationManager.NavigateTo("/", true);
+        }
+
+        var id = Convert.ToInt32(catId);
+
+        Recipes = await Http.GetFromJsonAsync<IEnumerable<Recipe>>($"api/Recipe/GetAllRecipesByCategoryId/{id}");
+    }
+
+}

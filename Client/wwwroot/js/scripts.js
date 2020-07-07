@@ -33,3 +33,7 @@ function toggleNavBar() {
     $('#navbarSupportedContent').collapse('toggle');
   }
 }
+
+function goBack() {
+  window.history.back();
+}

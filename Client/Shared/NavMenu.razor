@@ -15,15 +15,16 @@
         white-space: nowrap;
         padding-left: 1rem !important;
     }
+
     .dropdown-item.active, .dropdown-item:active {
-            background-color: #a44c9f !important;
-        }
+        background-color: #a44c9f !important;
+    }
 
     .cat-drpDown-img {
         width: 30px;
         height: 30px;
     }
-    </style>
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-ak justify-content-between">
     <a class="navbar-brand brandText" href="/">
         <img src="images/LogoMakr_5qCGuM.png" alt="logo" height="24" class="d-inline-block align-top" />
@@ -36,39 +37,61 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            @*<li class="nav-item">
                 <a class="nav-link" href="/managecategory">ManageCategories</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/createrecipe">CreateRecipe</a>
-            </li>
+            </li>*@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Categories
+                    Browse Categories
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
                     @if (Categories == null || !Categories.Any())
                     {
-                        <p><em>Loading...</em></p>
+                        <div class="d-flex flex-row w-100 justify-content-center mb-3">
+                            <div class="loader"></div>
+                        </div>
                     }
                     else
                     {
 
                         @foreach (var category in Categories)
                         {
-                            
-                            <a class="dropdown-item cat-drpDown-item d-flex align-items-center" href="/">
-                    
+                            <a class="dropdown-item cat-drpDown-item d-flex align-items-center" href="/recipebycategory/@category.Id/@category.Name">
                                 <div class="rounded bg-ak cat-drpDown-img d-flex justify-content-center align-items-center mr-2">
                                     <img src="data:image/bmp;base64, @(Convert.ToBase64String(category.UploadedImage?.ImageData))" alt="@($"{category.Name}")" width="24" height="24" />
-                                </div> @category.Name</a>
+                                </div> @category.Name
+                            </a>
                         }
                     }
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/">Show All</a>
                 </div>
             </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Manage
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item cat-drpDown-item d-flex align-items-center" href="/managecategory">
+                            <div class="rounded cat-drpDown-img d-flex justify-content-center align-items-center mr-2">
+                                <img src="https://img.icons8.com/nolan/24/maintenance.png" alt="ManageCategories" width="24" height="24" />
+                            </div> ManageCategories
+                        </a>
+
+                        <a class="dropdown-item cat-drpDown-item d-flex align-items-center" href="/createrecipe">
+                            <div class="rounded cat-drpDown-img d-flex justify-content-center align-items-center mr-2">
+                                <img src="https://img.icons8.com/color/24/000000/beer-recipe.png" alt="CreateRecipe" width="24" height="24" />
+                            </div> CreateRecipe
+                        </a>
+                    </div>
+                </li>
+
+
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

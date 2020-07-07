@@ -29,20 +29,20 @@
                                     Id="products-multiselect" />
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
+            <div class="d-flex flex-row">
+                <div class="form-group mr-3">
                     <label for="Recipe-Time">Time to prepare</label>
                     <TelerikNumericTextBox @bind-Value="@recipeForm.Time" Id="Recipe-Time"></TelerikNumericTextBox>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="timeUnit">Time to prepare Unit</label>
+                <div class="form-group">
+                    <label for="timeUnit">Time Unit</label>
                     <TelerikDropDownList @bind-Value="@recipeForm.TimeUnit" Data="@TimeUnits" DefaultText="Select Time Unit" Id="timeUnit">
                     </TelerikDropDownList>
                 </div>
             </div>
             <div class="form-group w-100">
                 <label for="MealServing">Serving (@recipeForm.Serving)</label>
-                <input type="range" min="1" max="150" @bind="@recipeForm.Serving" class="form-control-range" id="MealServing">
+                <input type="range" min="1" max="10" @bind="@recipeForm.Serving" class="form-control-range" id="MealServing">
             </div>
 
             <div class="form-group w-100">
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="form-group w-100">
+            <div class="form-group w-100 pt-3">
                 <textarea rows="5" class="form-control w-100" placeholder="Enter Recipe Description" @bind="recipeForm.Description" />
             </div>
 
@@ -111,8 +111,8 @@
 
 
             <div class="form-group w-100">
-                <label>Upload Recipe Images</label>
-                <TelerikUpload @ref="@UploadRef" Multiple="false" SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl" OnUpload="@OnUploadHandler" OnRemove="@onRemoveHandler"
+                <label>Upload Recipe Images</label> <span class="text-muted">(max size 2mb)</span>
+                <TelerikUpload @ref="@UploadRef" Multiple="true" SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl" OnUpload="@OnUploadHandler" OnRemove="@onRemoveHandler"
                                OnSuccess="@OnSuccessHandler"
                                AllowedExtensions="@( new List<string>() { ".jpg", ".png", ".jpeg" } )"
                                MaxFileSize="2097152" MinFileSize="1000" />
@@ -157,7 +157,7 @@
                         };
 
         ImagesUrls = new List<string>();
-
+        
         recipeForm = new RecipeForm();
         recipeForm.Ingredients = new List<Ingredient>();
         recipeForm.Directions = new List<Direction>();

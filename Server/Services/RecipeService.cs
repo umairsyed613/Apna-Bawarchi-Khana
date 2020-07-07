@@ -32,7 +32,10 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)
         {
-            return await _dbContext.Recipes.Include(i => i.RecipeCategories).AsNoTracking().Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId)).ToListAsync();
+            return await _dbContext.Recipes.Include(i => i.RecipeCategories)
+                                   .Include(i => i.RecipeImages)
+                                   .ThenInclude(i => i.UploadedImage)
+                                   .AsNoTracking().Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId)).ToListAsync();
         }
 
         public async Task<IEnumerable<Category>> GetAllCategories()
@@ -50,6 +53,8 @@ namespace ApnaBawarchiKhana.Server.Services
                 {
                     return null;
                 }
+
+                result = result.OrderBy(o => o.Name).ToList();
 
                 _memoryCache.Set(CacheKeys.AllCategories, result, DateTimeOffset.UtcNow.AddHours(2));
 

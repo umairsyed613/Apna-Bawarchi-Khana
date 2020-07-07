@@ -1,15 +1,18 @@
 ﻿@page "/viewrecipe/"
 @page "/viewrecipe/{id}"
+
+@inject IJSRuntime JsRuntime
+
 <!-- Recipe Section
  =================== -->
   <section id="recipe" class="rounded pr-2 pl-2 mb-4">
     <div class="row">
       <!-- Title -->
       <div class="col-12">
-        <h2>Barbecue Ribs (@Id)</h2>
+        <h2 class="mb-2 mt-2">Barbecue Ribs (@Id)</h2>
       </div>
     </div>
-    <hr />
+    <hr class="mb-2"/>
     <div class="mt-2 row vertical-align">
       <div class="col-12 p-0">
         <!-- Picture -->
@@ -61,7 +64,7 @@
             <div class="row">
               <div class="col-12 mt-4 p-0">
                 
-                <blockquote class="blockquote blockquote-custom recipe-info-row-bg p-5">
+                <blockquote class="blockquote blockquote-custom recipe-info-row-bg p-3">
                   <div class="blockquote-custom-icon bg-ak shadow-sm"><i class="fa fa-quote-left text-white"></i></div>
                   <p class="mb-0 mt-2 font-italic">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod 
                   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo."</p>
@@ -110,19 +113,33 @@
         </div>
       </div>
     </div>
+
+    <!--Rating-->
+    <div class="d-flex flex-row justify-content-center m-3">
+      <div class="pr-3 align-self-center">Have you prepared it? Please Rate </div>
+      <div class="rating">
+        <span @onclick="(() => Rate(5))">☆</span><span @onclick="(() => Rate(4))">☆</span><span @onclick="(() => Rate(3))">☆</span><span @onclick="(() => Rate(2))">☆</span><span @onclick="(() => Rate(1))">☆</span>
+      </div>
+    </div>
     <!-- Back to recipes -->
     <div class="row">
       <div class="col-12 text-center mb-3">
-        <a href="/">
-          <i class="fa fa-backward" aria-hidden="true"></i>
-          Go to back to recipes.
-        </a>
+        <TelerikButton Icon="arrow-double-60-left" Class="bg-ak text-white" OnClick="@GobackClickHandler">Go to back to recipes.</TelerikButton>
       </div>
     </div>
   </section>
 @code
 {
-  [Parameter]
-  public string Id { get; set; }
+    [Parameter]
+    public string Id { get; set; }
 
+    async Task GobackClickHandler()
+    {
+      await JsRuntime.InvokeVoidAsync("goBack");
+    }
+
+    async Task Rate(int rateValue)
+    {
+      Console.WriteLine($"Thank you for giving {rateValue} stars.");
+    }
 }

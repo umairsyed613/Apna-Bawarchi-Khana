@@ -37,6 +37,12 @@ namespace ApnaBawarchiKhana.Server.Controllers
         {
             await _recipeService.DeleteCategory(categoryId);
         }
+        
+        [HttpGet("[action]/{categoryId}")]
+        public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)
+        {
+            return await _recipeService.GetAllRecipesByCategoryId(categoryId);
+        }
 
         [HttpPost("[action]")]
         public async Task CreateRecipe([FromBody] CreateRecipeFormData recipeFormData)
