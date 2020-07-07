@@ -5,7 +5,7 @@
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import url('https://fonts.googleapis.com/css?family=Dancing+Script');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
 @font-face {
    font-family: 'Quirlycues';
    src: url(../fonts/Quirlycues.ttf);
@@ -36,16 +36,8 @@ body {
   overflow-x: hidden !important;
 }
 
-.roboto-400 {
+.roboto {
   font-family: 'Roboto', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 400;
-}
-
-.roboto-300 {
-  font-family: 'Roboto', sans-serif;
-  font-size: 1rem;
-  font-weight: 300;
 }
 
 .row {
