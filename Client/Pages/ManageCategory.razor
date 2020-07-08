@@ -26,8 +26,8 @@
         <div class="col-12">
             @if (categories == null)
             {
-                <div class="spinner-border text-success" role="status">
-                    <span class="sr-only">Loading...</span>
+                <div class="d-flex flex-row w-100 justify-content-center mb-5">
+                    <div class="loader"></div>
                 </div>
             }
             else
@@ -66,7 +66,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         categories = await Http.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
     }
 

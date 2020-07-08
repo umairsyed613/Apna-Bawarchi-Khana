@@ -27,7 +27,10 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task<Recipe> GetRecipeById(int recipeId)
         {
-            return await _dbContext.Recipes.AsNoTracking().FirstOrDefaultAsync(w => w.Id == recipeId);
+            return await _dbContext.Recipes.Include(i => i.RecipeCategories)
+                                   .Include(i => i.RecipeImages)
+                                   .ThenInclude(i => i.UploadedImage)
+                                   .AsNoTracking().Where(w => w.Id == recipeId).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)

@@ -1,4 +1,5 @@
 ﻿@page "/createrecipe"
+@page "/createrecipe/{recipeId}"
 
 @inject AbkFetchService AbkFetchService
 @inject HttpClient Http
@@ -10,9 +11,10 @@
     .k-window {
         max-width: 350px;
     }
+
     .k-edit-form-container {
-        max-width: 320px !important;
-        min-width: 320px !important;
+        max-width: 300px !important;
+        min-width: 300px !important;
     }
 
     .k-edit-label .k-edit-buttons {
@@ -99,10 +101,10 @@
                         <GridColumn Field="@(nameof(Ingredient.StepNr))" Title="StepNr" />
                         <GridColumn Field="@(nameof(Ingredient.Description))" Title="Description" />
                         <GridCommandColumn>
-                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Save</GridCommandButton>
-                            <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
-                            <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
-                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true"></GridCommandButton>
+                            <GridCommandButton Command="Edit" Icon="edit"></GridCommandButton>
+                            <GridCommandButton Command="Delete" Icon="delete"></GridCommandButton>
+                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true"></GridCommandButton>
                         </GridCommandColumn>
                     </GridColumns>
                     <GridToolBar>
@@ -120,10 +122,10 @@
                         <GridColumn Field="@(nameof(Direction.StepNr))" Title="StepNr" />
                         <GridColumn Field="@(nameof(Direction.Step))" Title="Step" />
                         <GridCommandColumn>
-                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Save</GridCommandButton>
-                            <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
-                            <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
-                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true"></GridCommandButton>
+                            <GridCommandButton Command="Edit" Icon="edit"></GridCommandButton>
+                            <GridCommandButton Command="Delete" Icon="delete"></GridCommandButton>
+                            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true"></GridCommandButton>
                         </GridCommandColumn>
                     </GridColumns>
                     <GridToolBar>
@@ -155,6 +157,11 @@
 </section>
 
 @code {
+    [Parameter]
+    public string recipeId { get; set; }
+
+    public Recipe recipe { get; set; }
+
     protected EditContext MyEditContext { get; set; }
 
     public RecipeForm recipeForm { get; set; }
@@ -173,23 +180,48 @@
 
     protected override async Task OnInitializedAsync()
     {
-        TimeUnits = new List<string>
-    {
+        TimeUnits = new List<string>{
                             "H",
                             "M"
                         };
 
         ImagesUrls = new List<string>();
-        
+
+        categories = (await AbkFetchService.GetCategories())?.ToList();
+
         recipeForm = new RecipeForm();
         recipeForm.Ingredients = new List<Ingredient>();
         recipeForm.Directions = new List<Direction>();
         recipeForm.Difficulty = 1;
         recipeForm.Serving = 1;
 
-
         MyEditContext = new EditContext(recipeForm);
-        categories = (await AbkFetchService.GetCategories())?.ToList();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await  base.OnParametersSetAsync();
+
+        if (!string.IsNullOrWhiteSpace(recipeId))
+        {
+            recipe = await Http.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{recipeId}");
+        }
+
+        if(recipe == null)
+        {
+            toastService.ShowError("Failed to load recipe", $"Recipe Id {recipeId}");
+            return;
+        }
+
+        recipeForm.Ingredients = recipe.Ingredients.ToList();
+        recipeForm.Directions = recipe.Directions.ToList();
+        recipeForm.Difficulty = recipe.Difficulty;
+        recipeForm.Serving = recipe.Serving;
+        recipeForm.Time = recipe.Time;
+        recipeForm.TimeUnit = recipe.TimeUnit;
+        recipeForm.Title = recipe.Title;
+        recipeForm.Description = recipe.Description;
+        recipeForm.SelectedCategoriesIds = recipe.RecipeCategories.Select(s => s.CategoryId).ToList();
     }
 
     async Task HandleValidSubmit()

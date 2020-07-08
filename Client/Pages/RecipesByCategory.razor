@@ -84,7 +84,7 @@
         }
 
         var id = Convert.ToInt32(catId);
-
+        Recipes = null;
         Recipes = await Http.GetFromJsonAsync<IEnumerable<Recipe>>($"api/Recipe/GetAllRecipesByCategoryId/{id}");
     }
 

@@ -676,3 +676,12 @@ hr {
     left: 0;
     color: #a44c9f;
   }
+
+.recipeImgThumbHolder {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.recipeImgThumb {
+  width: 200px !important;
+  height: 150px;
+}

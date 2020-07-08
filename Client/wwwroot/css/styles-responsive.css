@@ -48,6 +48,11 @@
     background-color: #818a91;
     z-index: 11000
   }
+
+  .recipeImgThumb {
+    width: 80px !important;
+    height: 60px !important;
+  }
 }
 
 /*Small devices (landscape phones, 576px and up)*/
