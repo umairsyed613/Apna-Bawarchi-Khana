@@ -50,23 +50,23 @@
                 <TelerikGrid Data="@Recipes" Height="600px" OnDelete="@DeleteHandler"
                              Pageable="true" PageSize="10">
                     <GridColumns>
-                        <GridColumn Field="@(nameof(Recipe.RecipeImages))" Title="Image">
+                        <GridColumn Field="@(nameof(RecipesListByCategory.Thumbnail))" Title="Image">
                             <Template>
                                 @{
-                                    var recipe = context as Recipe;
+                                    var recipe = context as RecipesListByCategory;
                                 }
-                                @if (recipe.RecipeImages.Any())
+                                @if (recipe.Thumbnail != null)
                                 {
                                     <div class="text-center recipeImgThumbHolder">
-                                        <img src="data:image/bmp;base64, @(Convert.ToBase64String(recipe.RecipeImages.First().UploadedImage?.ImageData))" alt="@($"{recipe.Title}")" class="recipeImgThumb img-thumbnail" />
+                                        <img src="data:image/bmp;base64, @(Convert.ToBase64String(recipe.Thumbnail))" alt="@($"{recipe.Title}")" class="recipeImgThumb img-thumbnail" />
                                     </div>
                                 }
                             </Template>
                         </GridColumn>
-                        <GridColumn Field="@(nameof(Recipe.Title))" Title="Info">
+                        <GridColumn Field="@(nameof(RecipesListByCategory.Title))" Title="Info">
                             <Template>
                                 @{
-                                    var recipe = context as Recipe;
+                                    var recipe = context as RecipesListByCategory;
                                     <div class="d-flex flex-row flex-wrap w-100">
                                         <div class="flex-fill text-truncate roboto text-dark font-weight-bold">@recipe.Title</div>
                                         <span class="flex-fill text-muted text-truncate roboto font-weight-normal">@recipe.Description</span>
@@ -94,7 +94,7 @@
 
     public Category CurrentCategory { get; set; }
 
-    List<Recipe> Recipes;
+    List<RecipesListByCategory> Recipes { get; set; }
 
     public bool showLoading { get; set; }
 
@@ -109,7 +109,7 @@
     {
         showLoading = true;
         Recipes = null;
-        Recipes = await Http.GetFromJsonAsync<List<Recipe>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
+        Recipes = await Http.GetFromJsonAsync<List<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
         showLoading = false;
     }
 
@@ -123,7 +123,7 @@
 
     public void EditHandler(GridCommandEventArgs args)
     {
-        var recipe = (Recipe)args.Item;
+        var recipe = (RecipesListByCategory)args.Item;
 
         if (recipe == null)
         {
@@ -131,7 +131,7 @@
             return;
         }
 
-        NavigationManager.NavigateTo($"/createrecipe/{recipe.Id}");
+        NavigationManager.NavigateTo($"/createrecipe/{recipe.RecipeId}");
     }
 
     protected void MyClickHandler()

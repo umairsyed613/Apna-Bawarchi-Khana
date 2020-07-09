@@ -147,7 +147,15 @@
                 <ValidationSummary />
             </div>
 
-            <TelerikButton ButtonType="@ButtonType.Submit">Create Recipe</TelerikButton>
+            @if (isUpdateForm)
+            {
+                <TelerikButton ButtonType="@ButtonType.Submit" Icon="save" Primary="true">Update Recipe</TelerikButton>
+            }
+            else
+            {
+                <TelerikButton ButtonType="@ButtonType.Submit" Icon="add" Primary="true">Create Recipe</TelerikButton>
+            }
+
         </EditForm>
 
 
@@ -161,6 +169,8 @@
     public string recipeId { get; set; }
 
     public Recipe recipe { get; set; }
+
+    public bool isUpdateForm { get; set; } = false;
 
     protected EditContext MyEditContext { get; set; }
 
@@ -216,6 +226,11 @@
             return;
         }
 
+        recipeForm.Ingredients = null;
+        recipeForm.Ingredients = new List<Ingredient>();
+        recipeForm.Directions = null;
+        recipeForm.Directions = new List<Direction>();
+
         recipeForm.Ingredients.AddRange(recipe.Ingredients.ToList());
         recipeForm.Directions.AddRange(recipe.Directions.ToList());
         recipeForm.Difficulty = recipe.Difficulty;
@@ -225,6 +240,8 @@
         recipeForm.Title = recipe.Title;
         recipeForm.Description = recipe.Description;
         recipeForm.SelectedCategoriesIds = recipe.RecipeCategories.Select(s => s.CategoryId).ToList();
+
+        isUpdateForm = true;
     }
 
     async Task HandleValidSubmit()

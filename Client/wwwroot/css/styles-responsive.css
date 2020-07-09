@@ -10,10 +10,11 @@
         height: 250px !Important;
     }
 
-  .container-fluid {
-    padding-right: 5px !important;
-    padding-left: 5px !important;
-  }
+    .container {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+        max-width: 100% !important;
+    }
 
   .slider .slider__slide {
     height: 190px;
@@ -66,10 +67,11 @@
     width: 380px;
   }
 
-  .container-fluid {
-    padding-right: 5px !important;
-    padding-left: 5px !important;
-  }
+    .container {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+        max-width: 100% !important;
+    }
 
   .slider .slider__slide {
     height: 246px;
@@ -116,11 +118,12 @@
   .recipe-itemSize {
     width: 360px;
   }
-  
-  .container-fluid {
-    padding-right: 5px !important;
-    padding-left: 5px !important;
-  }
+
+    .container {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+        max-width: 100% !important;
+    }
 
   .slider .slider__slide {
     height: 280px;
@@ -131,17 +134,23 @@
 /* Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .recipe-itemSize {
-    width: 315px;
+    width: 322px;
   }
     .recipeByCatThumb {
         height: 210px !Important;
+    }
+
+    .container {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+        max-width: 100% !important;
     }
 }
 
 /*Extra large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) {
   .recipe-itemSize {
-    width: 336px;
+    width: 354px;
   }
     .recipeByCatThumb {
         height: 210px !Important;
