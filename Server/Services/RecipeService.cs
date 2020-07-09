@@ -248,5 +248,24 @@ namespace ApnaBawarchiKhana.Server.Services
 
             return uploadedImage.Entity.Id;
         }
+
+        public async Task DeleteRecipe(int recipeId)
+        {
+           var recipe = await _dbContext.Recipes.FirstOrDefaultAsync(f => f.Id == recipeId);
+
+            if(recipe == null)
+            {
+                throw new ArgumentNullException(nameof(recipe));
+            }
+
+            _dbContext.Recipes.Remove(recipe);
+
+            await _dbContext.SaveChangesAsync();
+            //_dbContext.RecipeCategories.RemoveRange(recipe.RecipeCategories);
+            //_dbContext.Ingredients.RemoveRange(recipe.Ingredients);
+            //_dbContext.Directions.RemoveRange(recipe.Directions);
+            //_dbContext.RecipeImages.RemoveRange(recipe.RecipeImages);
+
+        }
     }
 }

@@ -17,6 +17,8 @@ namespace ApnaBawarchiKhana.Server.Services
 
         Task CreateRecipe(CreateRecipeFormData recipeFormData);
 
+        Task DeleteRecipe(int recipeId);
+
         Task CreateCategory(CreateCategoryFormData categoryFormData);
 
         Task DeleteCategory(int categoryId);

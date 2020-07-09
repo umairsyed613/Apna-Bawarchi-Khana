@@ -9,143 +9,143 @@
 @inject IToastService toastService
 <!-- Recipe Section
  =================== -->
-    <section id="recipe" class="h-100 w-100 rounded pr-2 pl-2 mb-4 animate__animated animate__fadeIn animate__delay-1s">
 
-        @if (recipe == null)
-        {
-            <div class="d-flex flex-row w-100 justify-content-center mb-5">
-                <div class="loader"></div>
-            </div>
-        }
-        else
-        {
-
-            <div id="recipeData">
-                <div class="row">
-                    <!-- Title -->
-                    <div class="col-12">
-                        <h2 class="mb-2 mt-2">@recipe.Title</h2>
-                    </div>
+@if (recipe == null)
+{
+    <div class="d-flex flex-row w-100 justify-content-center mb-5">
+        <div class="loader"></div>
+    </div>
+}
+else
+{
+    <section id="recipe" class="h-100 w-100 rounded pr-2 pl-2 mb-4">
+        <div id="recipeData">
+            <div class="row">
+                <!-- Title -->
+                <div class="col-12">
+                    <h2 class="mb-2 mt-2">@recipe.Title</h2>
                 </div>
-                <hr class="mb-2" />
-                <div class="mt-2 row vertical-align">
-                    <div class="col-12 p-0">
-                        <!-- Picture -->
-                        <div class="col-lg-6 pull-left">
-                            <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" class="d-flex img-fluid w-100 img-thumbnail img-recipe" />
-                        </div>
-                        <!-- Info -->
-                        <div class="col-lg-6 pull-right">
-                            <div class="recipe-info">
-                                <h3>Info</h3>
-                                <!-- Time -->
-                                <div class="row recipe-info-row">
-                                    <div class="col-2 text-center">
-                                        <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                    </div>
-                                    <div class="col-6">Time</div>
-                                    <div class="col-4">3:00 H</div>
+            </div>
+            <hr class="mb-2" />
+            <div class="mt-2 row vertical-align">
+                <div class="col-12 p-0">
+                    <!-- Picture -->
+                    <div class="col-lg-6 pull-left">
+                        <img src="images/bbq-pork-ribs.jpg" alt="bbq-pork-ribs" class="d-flex img-fluid w-100 img-thumbnail img-recipe" />
+                    </div>
+                    <!-- Info -->
+                    <div class="col-lg-6 pull-right">
+                        <div class="recipe-info">
+                            <h3>Info</h3>
+                            <!-- Time -->
+                            <div class="row recipe-info-row">
+                                <div class="col-2 text-center">
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
                                 </div>
-                                <!-- Difficulty -->
-                                <div class="row recipe-info-row">
-                                    <div class="col-2 text-center">
-                                        <i class="fa fa-area-chart" aria-hidden="true"></i>
-                                    </div>
-                                    <div class="col-6">Difficulty</div>
-                                    <div class="col-4">
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                    </div>
+                                <div class="col-6">Time</div>
+                                <div class="col-4">3:00 H</div>
+                            </div>
+                            <!-- Difficulty -->
+                            <div class="row recipe-info-row">
+                                <div class="col-2 text-center">
+                                    <i class="fa fa-area-chart" aria-hidden="true"></i>
                                 </div>
-                                <!-- Serves -->
-                                <div class="row recipe-info-row">
-                                    <div class="col-2 text-center">
-                                        <i class="fa fa-users" aria-hidden="true"></i>
-                                    </div>
-                                    <div class="col-6">Servings</div>
-                                    <div class="col-4">5</div>
+                                <div class="col-6">Difficulty</div>
+                                <div class="col-4">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
                                 </div>
+                            </div>
+                            <!-- Serves -->
+                            <div class="row recipe-info-row">
+                                <div class="col-2 text-center">
+                                    <i class="fa fa-users" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-6">Servings</div>
+                                <div class="col-4">5</div>
+                            </div>
 
-                                <!-- Chef -->
-                                <div class="row recipe-info-row">
-                                    <div class="col-2 text-center">
-                                        <i class="fa fa-female" aria-hidden="true"></i>
-                                    </div>
-                                    <div class="col-6">Recipe By</div>
-                                    <div class="col-4">Amna</div>
+                            <!-- Chef -->
+                            <div class="row recipe-info-row">
+                                <div class="col-2 text-center">
+                                    <i class="fa fa-female" aria-hidden="true"></i>
                                 </div>
+                                <div class="col-6">Recipe By</div>
+                                <div class="col-4">Amna</div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-12 mt-4 p-0">
+                            <div class="row">
+                                <div class="col-12 mt-4 p-0">
 
-                                        <blockquote class="blockquote blockquote-custom recipe-info-row-bg p-3">
-                                            <div class="blockquote-custom-icon bg-ak shadow-sm"><i class="fa fa-quote-left text-white"></i></div>
-                                            <p class="mb-0 mt-2 font-italic">
-                                                @recipe.Description
-                                            </p>
-                                        </blockquote><!-- END -->
-                                    </div>
+                                    <blockquote class="blockquote blockquote-custom recipe-info-row-bg p-3">
+                                        <div class="blockquote-custom-icon bg-ak shadow-sm"><i class="fa fa-quote-left text-white"></i></div>
+                                        <p class="mb-0 mt-2 font-italic">
+                                            @recipe.Description
+                                        </p>
+                                    </blockquote><!-- END -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Ingredients -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="recipe-ingredients">
-                            <h3>Ingredients</h3>
-                            <dl class="ingredients-list">
-                                <dt>10</dt>
-                                <dd>country-style pork ribs</dd>
-                                <dt>2</dt>
-                                <dd>tablespoons garlic powder</dd>
-                                <dt>1</dt>
-                                <dd>tablespoon salt</dd>
-                                <dt>1</dt>
-                                <dd>tablespoon pepper</dd>
-                                <dt>2</dt>
-                                <dd>cups of your favorite barbecue sauce</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-                <!-- Directions -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="recipe-directions">
-                            <h3>Directions</h3>
-                            <ol>
-                                <li>Preheat oven to 325.</li>
-                                <li>Place ribs meaty side up in an ungreased baking dish.</li>
-                                <li>Sprinkle with garlic powder, salt, and pepper.</li>
-                                <li>Cover with foil and bake for 2 hours.</li>
-                                <li>Drain liquid.</li>
-                                <li>Brush ribs generously with BBQ sauce.</li>
-                                <li>Bake uncovered for an additional 30 minutes in oven or on the BBQ.</li>
-                                <li>Add more sauce half-way through.</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <!--Rating-->
-                <div class="d-flex flex-row flex-wrap justify-content-center m-3">
-                    <div class="pr-3 align-self-center">Have you prepared it? Please Rate </div>
-                    <div class="rating">
-                        <span @onclick="(() => Rate(5))">☆</span><span @onclick="(() => Rate(4))">☆</span><span @onclick="(() => Rate(3))">☆</span><span @onclick="(() => Rate(2))">☆</span><span @onclick="(() => Rate(1))">☆</span>
-                    </div>
-                </div>
-                <!-- Back to recipes -->
-                <div class="row">
-                    <div class="col-12 text-center mb-3">
-                        <TelerikButton Icon="arrow-double-60-left" Class="bg-ak text-white" OnClick="@GobackClickHandler">Go to back to recipes.</TelerikButton>
+            </div>
+            <!-- Ingredients -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="recipe-ingredients">
+                        <h3>Ingredients</h3>
+                        <dl class="ingredients-list">
+                            <dt>10</dt>
+                            <dd>country-style pork ribs</dd>
+                            <dt>2</dt>
+                            <dd>tablespoons garlic powder</dd>
+                            <dt>1</dt>
+                            <dd>tablespoon salt</dd>
+                            <dt>1</dt>
+                            <dd>tablespoon pepper</dd>
+                            <dt>2</dt>
+                            <dd>cups of your favorite barbecue sauce</dd>
+                        </dl>
                     </div>
                 </div>
             </div>
-        }
+            <!-- Directions -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="recipe-directions">
+                        <h3>Directions</h3>
+                        <ol>
+                            <li>Preheat oven to 325.</li>
+                            <li>Place ribs meaty side up in an ungreased baking dish.</li>
+                            <li>Sprinkle with garlic powder, salt, and pepper.</li>
+                            <li>Cover with foil and bake for 2 hours.</li>
+                            <li>Drain liquid.</li>
+                            <li>Brush ribs generously with BBQ sauce.</li>
+                            <li>Bake uncovered for an additional 30 minutes in oven or on the BBQ.</li>
+                            <li>Add more sauce half-way through.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!--Rating-->
+            <div class="d-flex flex-row flex-wrap justify-content-center m-3">
+                <div class="pr-3 align-self-center">Have you prepared it? Please Rate </div>
+                <div class="rating">
+                    <span @onclick="(() => Rate(5))">☆</span><span @onclick="(() => Rate(4))">☆</span><span @onclick="(() => Rate(3))">☆</span><span @onclick="(() => Rate(2))">☆</span><span @onclick="(() => Rate(1))">☆</span>
+                </div>
+            </div>
+            <!-- Back to recipes -->
+            <div class="row">
+                <div class="col-12 text-center mb-3">
+                    <TelerikButton Icon="arrow-double-60-left" Class="bg-ak text-white" OnClick="@GobackClickHandler">Go to back to recipes.</TelerikButton>
+                </div>
+            </div>
+        </div>
     </section>
+}
+
 
 @code
 {

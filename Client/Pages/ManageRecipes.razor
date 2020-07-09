@@ -115,10 +115,10 @@
 
     public async Task DeleteHandler(GridCommandEventArgs args)
     {
-        var recipe = (Recipe)args.Item;
+        var recipe = (RecipesListByCategory)args.Item;
 
-        //await Http.DeleteAsync($"api/Recipe/DeleteCategory/{category.Id}");
-        //categories.Remove(category);
+        await Http.DeleteAsync($"api/Recipe/DeleteRecipe/{recipe.RecipeId}");
+        Recipes.Remove(recipe);
     }
 
     public void EditHandler(GridCommandEventArgs args)

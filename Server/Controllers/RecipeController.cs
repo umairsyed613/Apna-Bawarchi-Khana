@@ -57,5 +57,11 @@ namespace ApnaBawarchiKhana.Server.Controllers
         {
             await _recipeService.CreateRecipe(recipeFormData);
         }
+
+        [HttpDelete("[action]/{recipeId}")]
+        public async Task DeleteRecipe(int recipeId)
+        {
+            await _recipeService.DeleteRecipe(recipeId);
+        }
     }
 }
