@@ -202,19 +202,22 @@
     {
         await  base.OnParametersSetAsync();
 
-        if (!string.IsNullOrWhiteSpace(recipeId))
+        if (string.IsNullOrWhiteSpace(recipeId))
         {
-            recipe = await Http.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{recipeId}");
+            return;
         }
 
-        if(recipe == null)
+
+        recipe = await Http.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{recipeId}");
+
+        if (recipe == null)
         {
             toastService.ShowError("Failed to load recipe", $"Recipe Id {recipeId}");
             return;
         }
 
-        recipeForm.Ingredients = recipe.Ingredients.ToList();
-        recipeForm.Directions = recipe.Directions.ToList();
+        recipeForm.Ingredients.AddRange(recipe.Ingredients.ToList());
+        recipeForm.Directions.AddRange(recipe.Directions.ToList());
         recipeForm.Difficulty = recipe.Difficulty;
         recipeForm.Serving = recipe.Serving;
         recipeForm.Time = recipe.Time;

@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+
+using ImageProcessor;
+using ImageProcessor.Imaging;
+using ImageProcessor.Imaging.Formats;
 
 namespace ApnaBawarchiKhana.Server.Services
 {
     public interface IAkImageFileService
     {
         Task<byte[]> GetFileAsBytes(string path, bool deleteFile = true);
+        public byte[] ResizeImage(byte[] photoBytes);
     }
 
     public class AkImageFileService : IAkImageFileService
@@ -43,5 +50,41 @@ namespace ApnaBawarchiKhana.Server.Services
 
             return await File.ReadAllBytesAsync(physicalPath);
         }
+
+        public byte[] ResizeImage(byte[] photoBytes)
+        {
+            ISupportedImageFormat format = new JpegFormat { Quality = 70 };
+            ResizeLayer resizeLayer = new ResizeLayer(new Size(800, 600))
+            {
+                ResizeMode = ResizeMode.Min,
+                MaxSize = new Size(800, 600)
+            };
+
+
+            using (MemoryStream inStream = new MemoryStream(photoBytes))
+            {
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    // Initialize the ImageFactory using the overload to preserve EXIF metadata.
+                    using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+                    {
+                        // Load, resize, set the format and quality and save an image.
+                        imageFactory.Load(inStream)
+                                    .Resize(resizeLayer)
+                                    .Format(format)
+                                    .Watermark(new TextLayer{
+                                        Text = "ApnaBarwachiKhana",
+                                        FontColor = Color.White,
+                                        FontSize = 14,
+                                        Position = new Point(5, 5)
+                                    })
+                                    .Save(outStream);
+                    }
+                    // Do something with the stream.
+                    return outStream.ToArray();
+                }
+            }
+        }
+
     }
 }

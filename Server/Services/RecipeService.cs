@@ -8,6 +8,7 @@ using ApnaBawarchiKhana.Server.Database;
 using ApnaBawarchiKhana.Shared;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ApnaBawarchiKhana.Server.Services
@@ -27,18 +28,61 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task<Recipe> GetRecipeById(int recipeId)
         {
-            return await _dbContext.Recipes.Include(i => i.RecipeCategories)
+            var key = CacheKeys.Recipe + "_" + recipeId;
+
+            if (_memoryCache.TryGetValue(key, out Recipe data))
+            {
+                return data;
+            }
+            else
+            {
+                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions)
                                    .Include(i => i.RecipeImages)
                                    .ThenInclude(i => i.UploadedImage)
                                    .AsNoTracking().Where(w => w.Id == recipeId).FirstOrDefaultAsync();
+
+                if (result == null)
+                {
+                    return null;
+                }
+
+                _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));
+
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)
+        public async Task<IEnumerable<RecipesListByCategory>> GetAllRecipesByCategoryId(int categoryId)
         {
-            return await _dbContext.Recipes.Include(i => i.RecipeCategories)
+            var key = CacheKeys.RecipesByCatId + "_" + categoryId;
+
+            if (_memoryCache.TryGetValue(key, out IEnumerable<RecipesListByCategory> data))
+            {
+                return data;
+            }
+            else
+            {
+                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories)
                                    .Include(i => i.RecipeImages)
                                    .ThenInclude(i => i.UploadedImage)
-                                   .AsNoTracking().Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId)).ToListAsync();
+                                   .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
+                                   .Select(r => new RecipesListByCategory{
+                                       RecipeId = r.Id,
+                                       Description = r.Description,
+                                       Title = r.Title,
+                                       Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null
+                                   }).ToListAsync();
+
+                if (result == null)
+                {
+                    return null;
+                }
+
+                _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));
+
+                return result;
+            }
+
         }
 
         public async Task<IEnumerable<Category>> GetAllCategories()
@@ -133,7 +177,7 @@ namespace ApnaBawarchiKhana.Server.Services
                         if (!string.IsNullOrEmpty(image))
                         {
                             var imageData = await akImageFileService.GetFileAsBytes(image);
-                            var insertedImageId = await StoreImageInDb(imageData);
+                            var insertedImageId = await StoreImageInDb(akImageFileService.ResizeImage(imageData));
                             await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
                         }
                     }

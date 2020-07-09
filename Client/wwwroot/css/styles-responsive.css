@@ -3,8 +3,12 @@
 @media (max-width: 575.98px) {
 
   .recipe-itemSize {
-    width: 400px;
+    max-width: 400px;
   }
+
+    .recipeByCatThumb {
+        height: 250px !Important;
+    }
 
   .container-fluid {
     padding-right: 5px !important;
@@ -129,6 +133,9 @@
   .recipe-itemSize {
     width: 315px;
   }
+    .recipeByCatThumb {
+        height: 210px !Important;
+    }
 }
 
 /*Extra large devices (large desktops, 1200px and up)*/
@@ -136,4 +143,7 @@
   .recipe-itemSize {
     width: 336px;
   }
+    .recipeByCatThumb {
+        height: 210px !Important;
+    }
 }

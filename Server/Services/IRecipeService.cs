@@ -11,7 +11,7 @@ namespace ApnaBawarchiKhana.Server.Services
     {
         Task<Recipe> GetRecipeById(int recipeId);
 
-        Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId);
+        Task<IEnumerable<RecipesListByCategory>> GetAllRecipesByCategoryId(int categoryId);
 
         Task<IEnumerable<Category>> GetAllCategories();
 

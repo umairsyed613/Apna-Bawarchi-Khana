@@ -41,7 +41,7 @@ namespace ApnaBawarchiKhana.Server.Controllers
         }
 
         [HttpGet("[action]/{categoryId}")]
-        public async Task<IEnumerable<Recipe>> GetAllRecipesByCategoryId(int categoryId)
+        public async Task<IEnumerable<RecipesListByCategory>> GetAllRecipesByCategoryId(int categoryId)
         {
             return await _recipeService.GetAllRecipesByCategoryId(categoryId);
         }

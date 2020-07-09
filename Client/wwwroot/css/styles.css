@@ -685,3 +685,7 @@ hr {
   width: 200px !important;
   height: 150px;
 }
+
+.recipeByCatThumb{
+    height: 230px !Important;
+}
