@@ -58,6 +58,10 @@
     width: 80px !important;
     height: 60px !important;
   }
+
+    .recipeImgFluidHeight {
+        height: 270px !important;
+    }
 }
 
 /*Small devices (landscape phones, 576px and up)*/
@@ -110,6 +114,9 @@
     background-color: #818a91;
     z-index: 11000
   }
+    .recipeImgFluidHeight {
+        height: 450px !important;
+    }
 }
 
 /* Medium devices (tablets, 768px and up)*/
@@ -129,6 +136,10 @@
     height: 280px;
     width: 500px;
   }
+
+    .recipeImgFluidHeight {
+        height: 450px !important;
+    }
 }
 
 /* Large devices (desktops, 992px and up)*/
@@ -145,6 +156,14 @@
         padding-left: 5px !important;
         max-width: 100% !important;
     }
+
+    .recipeImgFluidHeight {
+        height: 350px !important;
+    }
+
+    div#ViewRecipeCarousal {
+        padding-top: 2.5rem;
+    }
 }
 
 /*Extra large devices (large desktops, 1200px and up)*/
@@ -154,5 +173,9 @@
   }
     .recipeByCatThumb {
         height: 210px !Important;
+    }
+
+    div#ViewRecipeCarousal {
+        padding-top: 2.5rem;
     }
 }

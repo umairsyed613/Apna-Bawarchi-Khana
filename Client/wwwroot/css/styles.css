@@ -689,3 +689,7 @@ hr {
 .recipeByCatThumb{
     height: 230px !Important;
 }
+
+.recipeImgFluidHeight{
+    height: 390px !important;
+}

@@ -43,7 +43,7 @@ namespace ApnaBawarchiKhana.Server.Services
 
                 if (result == null)
                 {
-                    return null;
+                    throw new InvalidOperationException("No recipe was found with provided Id");
                 }
 
                 _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));

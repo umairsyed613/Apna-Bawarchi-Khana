@@ -36,7 +36,7 @@
                         <a href="/viewrecipe/@recipe.RecipeId">
                             @if (recipe.Thumbnail != null)
                             {
-                                <img src="data:image/bmp;base64, @(Convert.ToBase64String(recipe.Thumbnail))" alt="@($"{recipe.Title}")" class="card-img-top recipeByCatThumb" />
+                                <img src="data:image/bmp;base64, @(Convert.ToBase64String(recipe.Thumbnail))" alt="@($"{recipe.Title}")" loading="lazy" class="card-img-top recipeByCatThumb" />
                             }
                         </a>
                         <div class="card-body">
