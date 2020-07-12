@@ -229,7 +229,7 @@ else
         await JsRuntime.InvokeVoidAsync("goBack");
     }
 
-    async Task Rate(int rateValue)
+    void Rate(int rateValue)
     {
         ratingMessage= $"Thank you for giving {rateValue} stars.";
     }

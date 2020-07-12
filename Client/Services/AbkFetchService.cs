@@ -50,7 +50,11 @@ namespace ApnaBawarchiKhana.Client
                 return data;
             }
 
-            if (!cacheRecipeByCategories.ContainsKey(catId))
+            if (cacheRecipeByCategories.TryGetValue(catId, out var cachedData))
+            {
+                return cachedData;
+            }
+            else
             {
                 var data = await _httpClient.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
 
@@ -60,10 +64,9 @@ namespace ApnaBawarchiKhana.Client
                 }
 
                 cacheRecipeByCategories.Add(catId, data);
+
                 return data;
             }
-
-            return cacheRecipeByCategories.GetValueOrDefault(catId);
         }
 
         public async Task<Recipe> GetRecipeById(int id)

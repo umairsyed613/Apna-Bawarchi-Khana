@@ -251,20 +251,37 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task DeleteRecipe(int recipeId)
         {
-           var recipe = await _dbContext.Recipes.FirstOrDefaultAsync(f => f.Id == recipeId);
+            var recipe = await _dbContext.Recipes.Include(i => i.RecipeImages).Include(c => c.RecipeCategories).FirstOrDefaultAsync(f => f.Id == recipeId);
 
-            if(recipe == null)
+            if (recipe == null)
             {
                 throw new ArgumentNullException(nameof(recipe));
             }
 
+            var uploadImagesIds = recipe.RecipeImages.Select(s => s.ImageId).ToList();
+            var recipeCatIds = recipe.RecipeCategories.Select(s => s.CategoryId).ToList();
+
             _dbContext.Recipes.Remove(recipe);
 
+
+            if (uploadImagesIds.Count > 0)
+            {
+                var uploadedImages = await _dbContext.UploadedImages.Where(w => uploadImagesIds.Contains(w.Id)).ToListAsync();
+
+                _dbContext.UploadedImages.RemoveRange(uploadedImages);
+            }
+
             await _dbContext.SaveChangesAsync();
-            //_dbContext.RecipeCategories.RemoveRange(recipe.RecipeCategories);
-            //_dbContext.Ingredients.RemoveRange(recipe.Ingredients);
-            //_dbContext.Directions.RemoveRange(recipe.Directions);
-            //_dbContext.RecipeImages.RemoveRange(recipe.RecipeImages);
+
+            _memoryCache.Remove(CacheKeys.Recipe + "_" + recipe.Id);
+
+            if(recipeCatIds.Count > 0)
+            {
+                foreach(var catId in recipeCatIds)
+                {
+                    _memoryCache.Remove(CacheKeys.RecipesByCatId + "_" + catId);
+                }
+            }
 
         }
     }

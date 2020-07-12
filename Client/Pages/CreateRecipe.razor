@@ -158,8 +158,10 @@
 
         </EditForm>
 
-
-
+        @if (showLoading)
+        {
+            <Loader Size="5" />
+        }
     </div>
 
 </section>
@@ -187,6 +189,8 @@
     private static readonly string pathToIcons = "/images/tempupload/";
 
     Telerik.Blazor.Components.TelerikUpload UploadRef { get; set; }
+
+    public bool showLoading { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -252,6 +256,8 @@
             return;
         }
 
+        showLoading = true;
+
         var recipeFormData = new CreateRecipeFormData()
         {
             Recipe = recipeForm,
@@ -269,6 +275,8 @@
             toastService.ShowError("Failed to Create Recipe");
             ImagesUrls = new List<string>();
         }
+
+        showLoading = false;
     }
 
     public void UpdateHandler(GridCommandEventArgs args)

@@ -42,7 +42,8 @@ namespace ApnaBawarchiKhana.Server.Database
                 entity.HasOne(d => d.UploadedImage)
                     .WithMany(p => p.Categories)
                     .HasForeignKey(d => d.ImageId)
-                    .HasConstraintName("FK__Categorie__Image__3C69FB99");
+                    .HasConstraintName("FK__Categories__ImageId")
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Direction>(entity =>
@@ -81,13 +82,13 @@ namespace ApnaBawarchiKhana.Server.Database
                     .WithMany(p => p.RecipeCategories)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RecipeCat__Categ__4316F928");
+                    .HasConstraintName("FK__RecipeCat__CatId").OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeCategories)
                     .HasForeignKey(d => d.RecipeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RecipeCat__Recip__440B1D61");
+                    .HasConstraintName("FK__RecipeCat__RecipeId").OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<RecipeImage>(entity =>
@@ -98,13 +99,13 @@ namespace ApnaBawarchiKhana.Server.Database
                     .WithMany(p => p.RecipeImages)
                     .HasForeignKey(d => d.ImageId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RecipeIma__Image__3F466844");
+                    .HasConstraintName("FK__RecipeImages__ImageId").OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.RecipeImages)
                     .HasForeignKey(d => d.RecipeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RecipeIma__Recip__403A8C7D");
+                    .HasConstraintName("FK__RecipeImages__RecipeId").OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Recipe>(entity =>
