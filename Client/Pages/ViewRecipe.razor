@@ -163,11 +163,22 @@ else
 
             <!--Rating-->
             <div class="d-flex flex-row flex-wrap justify-content-center m-3">
-                <div class="pr-3 align-self-center">Have you prepared it? Please Rate </div>
-                <div class="rating">
-                    <span @onclick="(() => Rate(5))">☆</span><span @onclick="(() => Rate(4))">☆</span><span @onclick="(() => Rate(3))">☆</span><span @onclick="(() => Rate(2))">☆</span><span @onclick="(() => Rate(1))">☆</span>
-                </div>
+                @if (string.IsNullOrEmpty(ratingMessage))
+                {
+                    <div class="pr-3 align-self-center">Have you prepared it? Please Rate </div>
+                    <div class="rating">
+                        <span @onclick="(() => Rate(5))">☆</span><span @onclick="(() => Rate(4))">☆</span><span @onclick="(() => Rate(3))">☆</span><span @onclick="(() => Rate(2))">☆</span><span @onclick="(() => Rate(1))">☆</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="pr-3 align-self-center">@ratingMessage</div>
+                }
+
             </div>
+
+
+
             <!-- Back to recipes -->
             <div class="row">
                 <div class="col-12 text-center mb-3">
@@ -186,6 +197,8 @@ else
 
     public Recipe recipe { get; set; }
 
+    public string ratingMessage { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -197,7 +210,7 @@ else
 
         try
         {
-            recipe = await Http.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{Id}");
+            recipe = await AbkFetchService.GetRecipeById(Convert.ToInt32(Id));
         }
         catch { }
 
@@ -218,6 +231,6 @@ else
 
     async Task Rate(int rateValue)
     {
-        Console.WriteLine($"Thank you for giving {rateValue} stars.");
+        ratingMessage= $"Thank you for giving {rateValue} stars.";
     }
 }

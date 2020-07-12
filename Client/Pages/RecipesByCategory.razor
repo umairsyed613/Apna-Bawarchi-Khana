@@ -4,6 +4,7 @@
 @using ApnaBawarchiKhana.Shared
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
+@inject AbkFetchService abkFetchService
 
 
     <section id="items" class="rounded mt-3 pt-2 pb-4 mb-4 animate__animated animate__fadeIn">
@@ -99,7 +100,7 @@
 
         Recipes = null;
 
-        Recipes = await Http.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{id}");
+        Recipes = await abkFetchService.GetRecipesByCategoryId(id);
 
         isLoading= false;
 

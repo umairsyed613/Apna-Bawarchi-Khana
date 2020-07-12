@@ -54,10 +54,10 @@ namespace ApnaBawarchiKhana.Server.Services
         public byte[] ResizeImage(byte[] photoBytes)
         {
             ISupportedImageFormat format = new JpegFormat { Quality = 70 };
-            ResizeLayer resizeLayer = new ResizeLayer(new Size(800, 600))
+            ResizeLayer resizeLayer = new ResizeLayer(new Size(640, 480))
             {
                 ResizeMode = ResizeMode.Min,
-                MaxSize = new Size(800, 600)
+                MaxSize = new Size(640, 480)
             };
 
 
