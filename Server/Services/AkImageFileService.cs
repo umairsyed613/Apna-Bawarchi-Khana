@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using Serilog;
+using SixLabors.Fonts;
 
 namespace ApnaBawarchiKhana.Server.Services
 {
@@ -19,10 +20,19 @@ namespace ApnaBawarchiKhana.Server.Services
         private static readonly Serilog.ILogger _logger = Log.ForContext<AkImageFileService>();
 
         private readonly IPathProvider _pathProvider;
+        
+        private static FontCollection collection;
+        private static FontFamily family;
+        private static Font font;
 
         public AkImageFileService(IPathProvider pathProvider)
         {
             _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+
+            collection = new FontCollection();
+            family = collection.Install("fonts/Roboto-Regular.ttf");
+            font = family.CreateFont(14, FontStyle.Regular);
+
         }
 
         public async Task<byte[]> GetFileAsBytes(string path, bool deleteFile = true)
@@ -59,7 +69,7 @@ namespace ApnaBawarchiKhana.Server.Services
                 using var outputStream = new MemoryStream();
                 using var inputStream = new MemoryStream(photoBytes);
                 using var image = SixLabors.ImageSharp.Image.Load(inputStream);
-                image.Mutate(x => x.Resize(0, 600, KnownResamplers.Lanczos3).DrawText("ApnaBarwachiKhana", SixLabors.Fonts.SystemFonts.CreateFont("Arial", 14, SixLabors.Fonts.FontStyle.Regular), SixLabors.ImageSharp.Color.White, new SixLabors.ImageSharp.PointF(5, 5)));
+                image.Mutate(x => x.Resize(0, 600, KnownResamplers.Lanczos3).DrawText("ApnaBarwachiKhana", font, SixLabors.ImageSharp.Color.White, new SixLabors.ImageSharp.PointF(5, 5)));
                 image.Save(outputStream, new JpegEncoder());
 
                 return outputStream.ToArray();
