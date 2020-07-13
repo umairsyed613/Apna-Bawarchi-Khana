@@ -30,4 +30,10 @@
     <Folder Include="images\tempupload\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="fonts\Roboto-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
