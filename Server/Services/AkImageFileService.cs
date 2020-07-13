@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using Serilog;
 
 namespace ApnaBawarchiKhana.Server.Services
 {
@@ -15,6 +16,8 @@ namespace ApnaBawarchiKhana.Server.Services
 
     public class AkImageFileService : IAkImageFileService
     {
+        private static readonly Serilog.ILogger _logger = Log.ForContext<AkImageFileService>();
+
         private readonly IPathProvider _pathProvider;
 
         public AkImageFileService(IPathProvider pathProvider)
@@ -39,6 +42,7 @@ namespace ApnaBawarchiKhana.Server.Services
             if (deleteFile)
             {
                 var bytes = await File.ReadAllBytesAsync(physicalPath);
+
                 File.Delete(physicalPath);
 
                 return bytes;
@@ -50,50 +54,22 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public byte[] ResizeImage(byte[] photoBytes)
         {
-            using var outputStream = new MemoryStream();
-
-            using var inputStream = new MemoryStream(photoBytes);
-            using (var image = SixLabors.ImageSharp.Image.Load(inputStream))
+            try
             {
+                using var outputStream = new MemoryStream();
+                using var inputStream = new MemoryStream(photoBytes);
+                using var image = SixLabors.ImageSharp.Image.Load(inputStream);
                 image.Mutate(x => x.Resize(0, 600, KnownResamplers.Lanczos3).DrawText("ApnaBarwachiKhana", SixLabors.Fonts.SystemFonts.CreateFont("Arial", 14, SixLabors.Fonts.FontStyle.Regular), SixLabors.ImageSharp.Color.White, new SixLabors.ImageSharp.PointF(5, 5)));
                 image.Save(outputStream, new JpegEncoder());
+
+                return outputStream.ToArray();
             }
+            catch(Exception ee)
+            {
+                _logger.Error(ee, "Error Resizing Image");
 
-            outputStream.Seek(0, SeekOrigin.Begin);
-
-            return outputStream.ToArray();
-
-            //ISupportedImageFormat format = new JpegFormat { Quality = 70 };
-            //ResizeLayer resizeLayer = new ResizeLayer(new Size(640, 480))
-            //{
-            //    ResizeMode = ResizeMode.Min,
-            //    MaxSize = new Size(640, 480)
-            //};
-
-
-            //using (MemoryStream inStream = new MemoryStream(photoBytes))
-            //{
-            //    using (MemoryStream outStream = new MemoryStream())
-            //    {
-            //        // Initialize the ImageFactory using the overload to preserve EXIF metadata.
-            //        using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-            //        {
-            //            // Load, resize, set the format and quality and save an image.
-            //            imageFactory.Load(inStream)
-            //                        .Resize(resizeLayer)
-            //                        .Format(format)
-            //                        .Watermark(new TextLayer{
-            //                            Text = "ApnaBarwachiKhana",
-            //                            FontColor = Color.White,
-            //                            FontSize = 14,
-            //                            Position = new Point(5, 5)
-            //                        })
-            //                        .Save(outStream);
-            //        }
-            //        // Do something with the stream.
-            //        return outStream.ToArray();
-            //    }
-            //}
+                return photoBytes;
+            }
         }
 
     }

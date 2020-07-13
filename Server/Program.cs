@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
+
+using ApnaBawarchiKhana.Server.Helper;
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
+using Serilog;
+using Serilog.Events;
 
 namespace ApnaBawarchiKhana.Server
 {
@@ -13,7 +15,29 @@ namespace ApnaBawarchiKhana.Server
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+                            .MinimumLevel.Information()
+                            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                            .Enrich.FromLogContext()
+                            .WriteTo.Sink(new InMemorySink())
+                            //.WriteTo.File(
+                            //                @"ApnaBawarchiKhanaLogs.txt",
+                            //                fileSizeLimitBytes: 1_000_000,
+                            //                rollOnFileSizeLimit: true,
+                            //                shared: true,
+                            //                flushToDiskInterval: TimeSpan.FromSeconds(10))
+                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+                            .CreateLogger();
+
+            try
+            {
+                CreateHostBuilder(args).UseSerilog().Build().Run();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

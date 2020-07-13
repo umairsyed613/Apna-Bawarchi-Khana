@@ -1,0 +1,44 @@
+﻿@page "/logviewer"
+
+@inject HttpClient Http
+
+<style>
+    .consoleLogViewer {
+        background-color: #000;
+        border: 1px solid #000;
+        color: #00ff00;
+        padding: 8px;
+        font-family: courier new;
+        line-height: 1.8rem;
+    }
+</style>
+<h3>LogViewer</h3>
+
+@if (LogLines != null)
+{
+    <div class="consoleLogViewer text-break">
+    @foreach (var line in LogLines)
+    {
+        @line <br /><br />
+    }
+        </div>
+}
+
+<TelerikButton Primary="true" OnClick="@FetchLogs">Fetch</TelerikButton>
+
+@code {
+
+    public List<string> LogLines { get; set; } = new List<string>();
+
+    async Task FetchLogs()
+    {
+        var data = await Http.GetFromJsonAsync<List<string>>("api/logs/getalllogs");
+
+        if (data != null && data.Count > 0)
+        {
+            LogLines.AddRange(data);
+
+        }
+
+    }
+}

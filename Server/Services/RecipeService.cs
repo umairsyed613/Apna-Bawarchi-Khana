@@ -172,14 +172,11 @@ namespace ApnaBawarchiKhana.Server.Services
 
                 if (recipeFormData.Images != null && recipeFormData.Images.Any())
                 {
-                    foreach (var image in recipeFormData.Images)
+                    foreach (var image in recipeFormData.Images.Where(w => !string.IsNullOrEmpty(w)).ToList())
                     {
-                        if (!string.IsNullOrEmpty(image))
-                        {
-                            var imageData = await akImageFileService.GetFileAsBytes(image);
-                            var insertedImageId = await StoreImageInDb(akImageFileService.ResizeImage(imageData));
-                            await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
-                        }
+                        var imageData = await akImageFileService.GetFileAsBytes(image);
+                        var insertedImageId = await StoreImageInDb(akImageFileService.ResizeImage(imageData));
+                        await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
                     }
 
                     await _dbContext.SaveChangesAsync();
