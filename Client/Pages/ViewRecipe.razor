@@ -249,6 +249,8 @@ else
 
     public string ratingMessage { get; set; }
 
+    private int maxRetryCount = 5;
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -260,7 +262,19 @@ else
 
         try
         {
-            recipe = await AbkFetchService.GetRecipeById(Convert.ToInt32(Id));
+            int i = 1;
+            while (i <= maxRetryCount)
+            {
+                recipe = await AbkFetchService.GetRecipeById(Convert.ToInt32(Id));
+
+                if(recipe != null)
+                {
+                    break;
+                }
+
+                i++;
+            }
+
         }
         catch { }
 

@@ -17,7 +17,7 @@ namespace ApnaBawarchiKhana.Server.Services
 {
     public class RecipeService : IRecipeService
     {
-        private static readonly Serilog.ILogger _logger = Log.ForContext<RecipeService>();
+        private static readonly ILogger _logger = Log.ForContext<RecipeService>();
 
         private readonly ApnaBawarchiKhanaDbContext _dbContext;
         private readonly IMemoryCache _memoryCache;
@@ -32,68 +32,85 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task<Recipe> GetRecipeById(int recipeId)
         {
-            var key = CacheKeys.Recipe + "_" + recipeId;
-
-            if (_memoryCache.TryGetValue(key, out Recipe data))
+            try
             {
-                return data;
-            }
-            else
-            {
-                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions).Include(r => r.RecipeRatings)
-                                   .Include(i => i.RecipeImages)
-                                   .ThenInclude(i => i.UploadedImage)
-                                   .AsNoTracking().Where(w => w.Id == recipeId).FirstOrDefaultAsync();
+                var key = CacheKeys.Recipe + "_" + recipeId;
 
-                if (result == null)
+                if (_memoryCache.TryGetValue(key, out Recipe data))
                 {
-                    throw new InvalidOperationException("No recipe was found with provided Id");
+                    return data;
                 }
+                else
+                {
+                    var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions).Include(r => r.RecipeRatings)
+                                                 .Include(i => i.RecipeImages)
+                                                 .ThenInclude(i => i.UploadedImage)
+                                                 .AsNoTracking().Where(w => w.Id == recipeId).FirstOrDefaultAsync();
 
-                _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));
+                    if (result == null)
+                    {
+                        throw new InvalidOperationException("No recipe was found with provided Id");
+                    }
 
-                return result;
+                    _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));
+
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Failed to get recipe by id {RecipeId}", recipeId);
+
+                throw;
             }
         }
 
         public async Task<IEnumerable<RecipesListByCategory>> GetAllRecipesByCategoryId(int categoryId)
         {
-            _logger.Information("Fetching Recipes By Category {CategoryId}", categoryId);
-
-            var key = CacheKeys.RecipesByCatId + "_" + categoryId;
-
-            if (_memoryCache.TryGetValue(key, out IEnumerable<RecipesListByCategory> data))
+            try
             {
-                if(data != null || !data.Any())
+                _logger.Information("Fetching Recipes By Category {CategoryId}", categoryId);
+                var key = CacheKeys.RecipesByCatId + "_" + categoryId;
+
+                if (_memoryCache.TryGetValue(key, out IEnumerable<RecipesListByCategory> data))
                 {
-                    return data;
+                    if (data != null || !data.Any())
+                    {
+                        return data;
+                    }
+
+                    _memoryCache.Remove(key);
                 }
 
-                _memoryCache.Remove(key);
+                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(r => r.RecipeRatings)
+                                             .Include(i => i.RecipeImages)
+                                             .ThenInclude(i => i.UploadedImage)
+                                             .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
+                                             .Select(
+                                                  r => new RecipesListByCategory
+                                                           {
+                                                               RecipeId = r.Id,
+                                                               Description = r.Description,
+                                                               Title = r.Title,
+                                                               Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null,
+                                                               Ratings = AverageCalculator.GetAverageRating(r.RecipeRatings.Select(s => s.Rating).ToList())
+                                                           }).ToListAsync();
+
+                if (result == null)
+                {
+                    return null;
+                }
+
+                _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(1));
+
+                return result;
             }
-
-            var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(r => r.RecipeRatings)
-                               .Include(i => i.RecipeImages)
-                               .ThenInclude(i => i.UploadedImage)
-                               .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
-                               .Select(r => new RecipesListByCategory
-                               {
-                                   RecipeId = r.Id,
-                                   Description = r.Description,
-                                   Title = r.Title,
-                                   Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null,
-                                   Ratings = AverageCalculator.GetAverageRating(r.RecipeRatings.Select(s => s.Rating).ToList())
-                               }).ToListAsync();
-
-            if (result == null)
+            catch (Exception e)
             {
-                return null;
+                _logger.Error(e, "Failed to get recipes by category id {CategoryId}", categoryId);
+
+                throw;
             }
-
-            _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(1));
-
-            return result;
-
         }
 
         public async Task<IEnumerable<Category>> GetAllCategories()
