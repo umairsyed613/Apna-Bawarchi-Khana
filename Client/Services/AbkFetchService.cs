@@ -110,16 +110,17 @@ namespace ApnaBawarchiKhana.Client
         private async Task<IEnumerable<RecipesListByCategory>> GetRecipesByCatIdFromServer(int catId)
         {
             IEnumerable<RecipesListByCategory> result = null;
-            var maxRetryAttempts = 3;
+            var maxRetryAttempts = 5;
             var pauseBetweenFailures = TimeSpan.FromSeconds(2);
 
             var retryPolicy = Policy
-                             .Handle<HttpRequestException>()
+                             .Handle<Exception>()
                              .WaitAndRetryAsync(maxRetryAttempts, i => pauseBetweenFailures);
 
             await retryPolicy.ExecuteAsync(
                 async () =>
                     {
+                        Console.WriteLine($"Fetching Recipes by Cat id : {catId}");
                         result = await _httpClient.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
                     });
 
@@ -163,16 +164,17 @@ namespace ApnaBawarchiKhana.Client
         private async Task<Recipe> GetRecipeIdFromServer(int id)
         {
             Recipe result = null;
-            var maxRetryAttempts = 3;
+            var maxRetryAttempts = 5;
             var pauseBetweenFailures = TimeSpan.FromSeconds(2);
 
             var retryPolicy = Policy
-                             .Handle<HttpRequestException>()
+                             .Handle<Exception>()
                              .WaitAndRetryAsync(maxRetryAttempts, i => pauseBetweenFailures);
 
             await retryPolicy.ExecuteAsync(
                 async () =>
                     {
+                        Console.WriteLine($"Fetching Recipe by id : {id}");
                         result = await _httpClient.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{id}");
                     });
 

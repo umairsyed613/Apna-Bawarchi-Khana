@@ -63,7 +63,7 @@ namespace ApnaBawarchiKhana.Server.Services
             }
             catch (Exception e)
             {
-                _logger.Error(e, "Failed to get recipe by id {RecipeId}", recipeId);
+                _logger.Error(e, "Failed to get recipe by id {RecipeId} ", recipeId);
 
                 throw;
             }
@@ -113,7 +113,7 @@ namespace ApnaBawarchiKhana.Server.Services
             }
             catch (Exception e)
             {
-                _logger.Error(e, "Failed to get recipes by category id {CategoryId}", categoryId);
+                _logger.Error(e, "Failed to get recipes by category id {CategoryId} ", categoryId);
 
                 throw;
             }
@@ -227,7 +227,7 @@ namespace ApnaBawarchiKhana.Server.Services
             }
             catch(Exception ee)
             {
-                _logger.Error(ee, "Failed to Create Recipe");
+                _logger.Error(ee, "Failed to Create Recipe. ");
                  throw;
             }
         }
