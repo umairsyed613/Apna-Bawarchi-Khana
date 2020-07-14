@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 using ApnaBawarchiKhana.Server.Helper;
 
@@ -26,12 +25,16 @@ namespace ApnaBawarchiKhana.Server
                             //                rollOnFileSizeLimit: true,
                             //                shared: true,
                             //                flushToDiskInterval: TimeSpan.FromSeconds(10))
-                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+                            //.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
                             .CreateLogger();
 
             try
             {
                 CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ee)
+            {
+                Log.Fatal(ee, "Application crashing");
             }
             finally
             {

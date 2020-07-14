@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using ApnaBawarchiKhana.Server.Database;
 using ApnaBawarchiKhana.Shared;
-
+using EFDbFactory.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
@@ -19,13 +19,14 @@ namespace ApnaBawarchiKhana.Server.Services
     {
         private static readonly ILogger _logger = Log.ForContext<RecipeService>();
 
-        private readonly ApnaBawarchiKhanaDbContext _dbContext;
+        private readonly IDbFactory _dbFactory;
+
         private readonly IMemoryCache _memoryCache;
         private readonly IAkImageFileService akImageFileService;
 
-        public RecipeService(IMemoryCache memoryCache, ApnaBawarchiKhanaDbContext dbContext, IAkImageFileService akImageFileService)
+        public RecipeService(IMemoryCache memoryCache, IDbFactory dbFactory, IAkImageFileService akImageFileService)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             this.akImageFileService = akImageFileService ?? throw new ArgumentNullException(nameof(akImageFileService));
         }
@@ -42,6 +43,9 @@ namespace ApnaBawarchiKhana.Server.Services
                 }
                 else
                 {
+                    using var factory = await _dbFactory.Create();
+                    using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
+
                     var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions).Include(r => r.RecipeRatings)
                                                  .Include(i => i.RecipeImages)
                                                  .ThenInclude(i => i.UploadedImage)
@@ -82,6 +86,8 @@ namespace ApnaBawarchiKhana.Server.Services
                     _memoryCache.Remove(key);
                 }
 
+                using var factory = await _dbFactory.Create();
+                using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
                 var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(r => r.RecipeRatings)
                                              .Include(i => i.RecipeImages)
                                              .ThenInclude(i => i.UploadedImage)
@@ -121,6 +127,9 @@ namespace ApnaBawarchiKhana.Server.Services
             }
             else
             {
+                using var factory = await _dbFactory.Create();
+                using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
+
                 List<Category> result = null;
                 result = await _dbContext.Categories.Include(i => i.UploadedImage).AsNoTracking().ToListAsync();
 
@@ -149,7 +158,8 @@ namespace ApnaBawarchiKhana.Server.Services
                 throw new InvalidOperationException("Cannot add recipe without categories");
             }
 
-            using var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
+            using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
 
             try
             {
@@ -203,21 +213,20 @@ namespace ApnaBawarchiKhana.Server.Services
                     foreach (var image in recipeFormData.Images.Where(w => !string.IsNullOrEmpty(w)).ToList())
                     {
                         var imageData = await akImageFileService.GetFileAsBytes(image);
-                        var insertedImageId = await StoreImageInDb(akImageFileService.ResizeImage(imageData));
+                        var insertedImageId = await StoreImageInDb(_dbContext, akImageFileService.ResizeImage(imageData));
                         await _dbContext.RecipeImages.AddAsync(new RecipeImage { ImageId = insertedImageId, RecipeId = recipe.Entity.Id });
                     }
 
                     await _dbContext.SaveChangesAsync();
                 }
 
-                await transaction.CommitAsync();
+                factory.CommitTransaction();
                 
                 _logger.Information("Recipe: {RecipeTitle} has been created sucessfully.", recipeFormData.Recipe.Title);
 
             }
             catch(Exception ee)
             {
-                await transaction.RollbackAsync();
                 _logger.Error(ee, "Failed to Create Recipe");
                  throw;
             }
@@ -236,21 +245,33 @@ namespace ApnaBawarchiKhana.Server.Services
             }
 
             int? insertedImageId = null;
+            
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
+            using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
 
             if (!string.IsNullOrEmpty(categoryFormData.IconPath))
             {
                 var imageData = await akImageFileService.GetFileAsBytes(categoryFormData.IconPath);
-                insertedImageId = await StoreImageInDb(imageData);
+                insertedImageId = await StoreImageInDb(_dbContext, imageData);
             }
 
             categoryFormData.Category.ImageId = insertedImageId;
+
+
+
             await _dbContext.Categories.AddAsync(categoryFormData.Category);
             await _dbContext.SaveChangesAsync();
+
+            factory.CommitTransaction();
+
             _memoryCache.Remove(CacheKeys.AllCategories);
         }
 
         public async Task DeleteCategory(int categoryId)
         {
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
+            using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
+
             var category = await _dbContext.Categories.Include(i => i.UploadedImage).FirstOrDefaultAsync(f => f.Id == categoryId);
 
             if (category == null)
@@ -265,22 +286,28 @@ namespace ApnaBawarchiKhana.Server.Services
 
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
+
+            factory.CommitTransaction();
+
             _memoryCache.Remove(CacheKeys.AllCategories);
 
             _logger.Information("Category {CategoryId} has been removed.", categoryId);
         }
 
-        private async Task<int> StoreImageInDb(byte[] imageData)
+        private async Task<int> StoreImageInDb(ApnaBawarchiKhanaDbContext dbContext, byte[] imageData)
         {
             var imData = new UploadedImage { ImageData = imageData };
-            var uploadedImage = await _dbContext.UploadedImages.AddAsync(imData);
-            await _dbContext.SaveChangesAsync();
+            var uploadedImage = await dbContext.UploadedImages.AddAsync(imData);
+            await dbContext.SaveChangesAsync();
 
             return uploadedImage.Entity.Id;
         }
 
         public async Task DeleteRecipe(int recipeId)
         {
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
+            using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
+
             var recipe = await _dbContext.Recipes.Include(i => i.RecipeImages).Include(c => c.RecipeCategories).FirstOrDefaultAsync(f => f.Id == recipeId);
 
             if (recipe == null)
@@ -313,6 +340,8 @@ namespace ApnaBawarchiKhana.Server.Services
                 }
             }
 
+            factory.CommitTransaction();
+
             _logger.Information("Recipe {RecipeId} has been removed.", recipeId);
         }
 
@@ -327,9 +356,13 @@ namespace ApnaBawarchiKhana.Server.Services
             {
                 throw new InvalidOperationException("Rating cannot be less than 1 and greater than 5");
             }
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
+            using var _dbContext = factory.FactoryFor<ApnaBawarchiKhanaDbContext>();
 
             await _dbContext.RecipeRatings.AddAsync(new RecipeRating { RecipeId = recipeRatingForm.RecipeId, Rating = recipeRatingForm.RatingValue });
             await _dbContext.SaveChangesAsync();
+
+            factory.CommitTransaction();
         }
     }
 }

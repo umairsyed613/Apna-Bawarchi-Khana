@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using ApnaBawarchiKhana.Server.Database;
 using ApnaBawarchiKhana.Server.Services;
 
+using EFDbFactory.Sql;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApnaBawarchiKhana.Server.Controllers
@@ -13,12 +15,12 @@ namespace ApnaBawarchiKhana.Server.Controllers
     [ApiController]
     public class StatusController : ControllerBase
     {
-        private readonly ApnaBawarchiKhanaDbContext _databaseContext;
+        private readonly IDbFactory _dbFactory;
         private readonly IPathProvider _pathProvider;
 
-        public StatusController(ApnaBawarchiKhanaDbContext databaseContext, IPathProvider pathProvider)
+        public StatusController(IDbFactory dbFactory, IPathProvider pathProvider)
         {
-            _databaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
             _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         }
 
@@ -29,11 +31,11 @@ namespace ApnaBawarchiKhana.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public string PingDb()
+        public async Task<string> PingDb()
         {
             try
             {
-                return _databaseContext.Categories.Count().ToString();
+                return (await _dbFactory.Create()).FactoryFor<ApnaBawarchiKhanaDbContext>().Categories.Count().ToString();
             }
             catch
             {

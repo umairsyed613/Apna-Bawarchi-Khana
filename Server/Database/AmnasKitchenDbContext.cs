@@ -1,15 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using ApnaBawarchiKhana.Shared;
+using EFDbFactory.Sql;
 
 namespace ApnaBawarchiKhana.Server.Database
 {
-    public partial class ApnaBawarchiKhanaDbContext : DbContext
+    public partial class ApnaBawarchiKhanaDbContext : CommonDbContext
     {
-        public ApnaBawarchiKhanaDbContext()
-        {
-        }
-
         public ApnaBawarchiKhanaDbContext(DbContextOptions<ApnaBawarchiKhanaDbContext> options) : base(options)
         {
         }
@@ -24,9 +21,9 @@ namespace ApnaBawarchiKhana.Server.Database
         public virtual DbSet<UploadedImage> UploadedImages { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 using ApnaBawarchiKhana.Server.Database;
 using ApnaBawarchiKhana.Server.Services;
+
+using EFDbFactory.Sql.Extensions;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ApnaBawarchiKhana.Server
@@ -24,10 +27,12 @@ namespace ApnaBawarchiKhana.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApnaBawarchiKhanaDbContext>(options => options.UseSqlServer(GetDbConnectionString(Configuration)), ServiceLifetime.Transient);
-
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddRazorPages();
+
+            var connectionString = GetDbConnectionString(Configuration);
+            services.AddEfDbFactory(connectionString);
+            
             services.AddMemoryCache();
 
             services.AddSingleton<IPathProvider, PathProvider>();

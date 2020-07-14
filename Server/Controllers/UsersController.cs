@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using ApnaBawarchiKhana.Server.Database;
 using ApnaBawarchiKhana.Shared;
 
+using EFDbFactory.Sql;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace ApnaBawarchiKhana.Server.Controllers
 {
@@ -17,11 +16,11 @@ namespace ApnaBawarchiKhana.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ApnaBawarchiKhanaDbContext _dbContext;
+        private readonly IDbFactory _dbFactory;
 
-        public UsersController(ApnaBawarchiKhanaDbContext dbContext)
+        public UsersController(IDbFactory dbFactory)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
         }
 
         [HttpGet("[action]")]
@@ -29,7 +28,8 @@ namespace ApnaBawarchiKhana.Server.Controllers
         {
             try
             {
-                return await _dbContext.Users.ToListAsync();
+                using var factory = await _dbFactory.Create();
+                return await factory.FactoryFor<ApnaBawarchiKhanaDbContext>().Users.ToListAsync();
             }
             catch
             {
