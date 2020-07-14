@@ -58,30 +58,34 @@ namespace ApnaBawarchiKhana.Server.Services
 
             if (_memoryCache.TryGetValue(key, out IEnumerable<RecipesListByCategory> data))
             {
-                return data;
-            }
-            else
-            {
-                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories)
-                                   .Include(i => i.RecipeImages)
-                                   .ThenInclude(i => i.UploadedImage)
-                                   .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
-                                   .Select(r => new RecipesListByCategory{
-                                       RecipeId = r.Id,
-                                       Description = r.Description,
-                                       Title = r.Title,
-                                       Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null
-                                   }).ToListAsync();
-
-                if (result == null)
+                if(data != null || !data.Any())
                 {
-                    return null;
+                    return data;
                 }
 
-                _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(2));
-
-                return result;
+                _memoryCache.Remove(key);
             }
+
+            var result = await _dbContext.Recipes.Include(i => i.RecipeCategories)
+                               .Include(i => i.RecipeImages)
+                               .ThenInclude(i => i.UploadedImage)
+                               .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
+                               .Select(r => new RecipesListByCategory
+                               {
+                                   RecipeId = r.Id,
+                                   Description = r.Description,
+                                   Title = r.Title,
+                                   Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null
+                               }).ToListAsync();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            _memoryCache.Set(key, result, DateTimeOffset.UtcNow.AddHours(1));
+
+            return result;
 
         }
 
