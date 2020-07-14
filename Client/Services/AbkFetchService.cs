@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,53 +22,27 @@ namespace ApnaBawarchiKhana.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-
         public async Task<IList<Category>> GetCategories()
         {
             if (Categories == null)
             {
-                Categories = await _httpClient.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+                var maxRetryAttempts = 5;
+                var pauseBetweenFailures = TimeSpan.FromSeconds(2);
+
+                var retryPolicy = Policy
+                                 .Handle<Exception>()
+                                 .WaitAndRetryAsync(maxRetryAttempts, i => pauseBetweenFailures);
+
+                await retryPolicy.ExecuteAsync(
+                    async () =>
+                        {
+                            Categories = await _httpClient.GetFromJsonAsync<IList<Category>>("api/Recipe/GetAllCategories");
+                        });
             }
 
             return Categories;
         }
-
-        //public async Task<IEnumerable<RecipesListByCategory>> GetRecipesByCategoryId(int catId)
-        //{
-        //    if (cacheRecipeByCategories == null)
-        //    {
-        //        var data = await _httpClient.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
-
-        //        if(data == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        cacheRecipeByCategories = new Dictionary<int, IEnumerable<RecipesListByCategory>>
-        //        {
-        //            { catId, data }
-        //        };
-        //        return data;
-        //    }
-
-        //    if (cacheRecipeByCategories.TryGetValue(catId, out var cachedData))
-        //    {
-        //        return cachedData;
-        //    }
-        //    else
-        //    {
-        //        var data = await _httpClient.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
-
-        //        if (data == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        cacheRecipeByCategories.Add(catId, data);
-
-        //        return data;
-        //    }
-        //}
+        
         public async Task<IEnumerable<RecipesListByCategory>> GetRecipesByCategoryId(int catId)
         {
             if (cacheRecipeByCategories == null)
@@ -120,7 +93,6 @@ namespace ApnaBawarchiKhana.Client
             await retryPolicy.ExecuteAsync(
                 async () =>
                     {
-                        Console.WriteLine($"Fetching Recipes by Cat id : {catId}");
                         result = await _httpClient.GetFromJsonAsync<IEnumerable<RecipesListByCategory>>($"api/Recipe/GetAllRecipesByCategoryId/{catId}");
                     });
 
@@ -174,7 +146,6 @@ namespace ApnaBawarchiKhana.Client
             await retryPolicy.ExecuteAsync(
                 async () =>
                     {
-                        Console.WriteLine($"Fetching Recipe by id : {id}");
                         result = await _httpClient.GetFromJsonAsync<Recipe>($"api/Recipe/GetRecipeById/{id}");
                     });
 

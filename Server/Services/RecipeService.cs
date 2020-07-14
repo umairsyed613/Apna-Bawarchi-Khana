@@ -35,6 +35,8 @@ namespace ApnaBawarchiKhana.Server.Services
         {
             try
             {
+                _logger.Information("Fetching Recipe By Id {RecipeId}", recipeId);
+
                 var key = CacheKeys.Recipe + "_" + recipeId;
 
                 if (_memoryCache.TryGetValue(key, out Recipe data))
