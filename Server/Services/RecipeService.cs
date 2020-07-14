@@ -11,10 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
 
+using Serilog;
+
 namespace ApnaBawarchiKhana.Server.Services
 {
     public class RecipeService : IRecipeService
     {
+        private static readonly Serilog.ILogger _logger = Log.ForContext<RecipeService>();
+
         private readonly ApnaBawarchiKhanaDbContext _dbContext;
         private readonly IMemoryCache _memoryCache;
         private readonly IAkImageFileService akImageFileService;
@@ -36,7 +40,7 @@ namespace ApnaBawarchiKhana.Server.Services
             }
             else
             {
-                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions)
+                var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(i => i.Ingredients).Include(d => d.Directions).Include(r => r.RecipeRatings)
                                    .Include(i => i.RecipeImages)
                                    .ThenInclude(i => i.UploadedImage)
                                    .AsNoTracking().Where(w => w.Id == recipeId).FirstOrDefaultAsync();
@@ -54,6 +58,8 @@ namespace ApnaBawarchiKhana.Server.Services
 
         public async Task<IEnumerable<RecipesListByCategory>> GetAllRecipesByCategoryId(int categoryId)
         {
+            _logger.Information("Fetching Recipes By Category {CategoryId}", categoryId);
+
             var key = CacheKeys.RecipesByCatId + "_" + categoryId;
 
             if (_memoryCache.TryGetValue(key, out IEnumerable<RecipesListByCategory> data))
@@ -66,7 +72,7 @@ namespace ApnaBawarchiKhana.Server.Services
                 _memoryCache.Remove(key);
             }
 
-            var result = await _dbContext.Recipes.Include(i => i.RecipeCategories)
+            var result = await _dbContext.Recipes.Include(i => i.RecipeCategories).Include(r => r.RecipeRatings)
                                .Include(i => i.RecipeImages)
                                .ThenInclude(i => i.UploadedImage)
                                .AsNoTracking().OrderByDescending(o => o.CreatedAt).Where(w => w.RecipeCategories.Any(a => a.CategoryId == categoryId))
@@ -75,7 +81,8 @@ namespace ApnaBawarchiKhana.Server.Services
                                    RecipeId = r.Id,
                                    Description = r.Description,
                                    Title = r.Title,
-                                   Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null
+                                   Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null,
+                                   Ratings = r.RecipeRatings.Select(s => s.Rating).ToList()
                                }).ToListAsync();
 
             if (result == null)
@@ -187,11 +194,14 @@ namespace ApnaBawarchiKhana.Server.Services
                 }
 
                 await transaction.CommitAsync();
-            }
-            catch
-            {
+                
+                _logger.Information("Recipe: {RecipeTitle} has been created sucessfully.", recipeFormData.Recipe.Title);
 
+            }
+            catch(Exception ee)
+            {
                 await transaction.RollbackAsync();
+                _logger.Error(ee, "Failed to Create Recipe");
                  throw;
             }
         }
@@ -239,6 +249,8 @@ namespace ApnaBawarchiKhana.Server.Services
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
             _memoryCache.Remove(CacheKeys.AllCategories);
+
+            _logger.Information("Category {CategoryId} has been removed.", categoryId);
         }
 
         private async Task<int> StoreImageInDb(byte[] imageData)
@@ -284,6 +296,23 @@ namespace ApnaBawarchiKhana.Server.Services
                 }
             }
 
+            _logger.Information("Recipe {RecipeId} has been removed.", recipeId);
+        }
+
+        public async Task StoreRecipeRating(RecipeRatingForm recipeRatingForm)
+        {
+            if (recipeRatingForm == null)
+            {
+                throw new ArgumentNullException(nameof(recipeRatingForm));
+            }
+
+            if (recipeRatingForm.RecipeId < 1 || recipeRatingForm.RatingValue > 5)
+            {
+                throw new InvalidOperationException("Rating cannot be less than 1 and greater than 5");
+            }
+
+            await _dbContext.RecipeRatings.AddAsync(new RecipeRating { RecipeId = recipeRatingForm.RecipeId, Rating = recipeRatingForm.RatingValue });
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

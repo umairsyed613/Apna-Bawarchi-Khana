@@ -279,8 +279,10 @@ else
         await JsRuntime.InvokeVoidAsync("goBack");
     }
 
-    void Rate(int rateValue)
+    async Task Rate(int rateValue)
     {
-        ratingMessage= $"Thank you for giving {rateValue} stars.";
+        ratingMessage = $"Thank you for giving {rateValue} stars.";
+
+        await Http.PostAsJsonAsync("api/Recipe/StoreRecipeRating/", new RecipeRatingForm { RecipeId = recipe.Id, RatingValue = rateValue });
     }
 }

@@ -47,4 +47,13 @@ namespace ApnaBawarchiKhana.Shared
         [MinLength(1, ErrorMessage = "Please Add Directions")]
         public List<Direction> Directions { get; set; }
     }
+
+    public class RecipeRatingForm
+    {
+        [Required(ErrorMessage = "Provide Recipe Id")]
+        public int RecipeId { get; set; }
+
+        [Required(ErrorMessage = "Provide Rating")]
+        public int RatingValue { get; set; }
+    }
 }

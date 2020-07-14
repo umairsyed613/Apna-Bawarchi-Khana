@@ -20,6 +20,7 @@ namespace ApnaBawarchiKhana.Server.Database
         public virtual DbSet<RecipeCategory> RecipeCategories { get; set; }
         public virtual DbSet<RecipeImage> RecipeImages { get; set; }
         public virtual DbSet<Recipe> Recipes { get; set; }
+        public virtual DbSet<RecipeRating> RecipeRatings { get; set; }
         public virtual DbSet<UploadedImage> UploadedImages { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -120,6 +121,20 @@ namespace ApnaBawarchiKhana.Server.Database
                     .IsRequired()
                     .HasMaxLength(512);
             });
+
+            modelBuilder.Entity<RecipeRating>(entity =>
+                {
+                    entity.ToTable("RecipeRating", "sa_amna");
+
+                    entity.HasOne(d => d.Recipe)
+                          .WithMany(p => p.RecipeRatings)
+                          .HasForeignKey(d => d.RecipeId)
+                          .OnDelete(DeleteBehavior.ClientSetNull)
+                          .HasConstraintName("FK__RecipeRating__RecipeId").OnDelete(DeleteBehavior.Cascade);
+
+                    entity.Property(e => e.Rating)
+                          .IsRequired();
+                });
 
             modelBuilder.Entity<UploadedImage>(entity =>
             {

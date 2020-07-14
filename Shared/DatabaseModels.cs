@@ -91,6 +91,7 @@ namespace ApnaBawarchiKhana.Shared
             this.Ingredients = new HashSet<Ingredient>();
             this.RecipeCategories = new HashSet<RecipeCategory>();
             this.RecipeImages = new HashSet<RecipeImage>();
+            this.RecipeRatings = new HashSet<RecipeRating>();
         }
 
         [Key]
@@ -132,6 +133,8 @@ namespace ApnaBawarchiKhana.Shared
         public ICollection<RecipeCategory> RecipeCategories { get; set; }
 
         public ICollection<RecipeImage> RecipeImages { get; set; }
+
+        public ICollection<RecipeRating> RecipeRatings { get; set; }
     }
 
     [Table("sa_amna.RecipeCategory")]
@@ -218,4 +221,20 @@ namespace ApnaBawarchiKhana.Shared
         public string Email { get; set; }
     }
 
+    [Table("sa_amna.RecipeRating")]
+    public partial class RecipeRating
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required(ErrorMessage = "Id is required")]
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Recipe Id is required")]
+        public int RecipeId { get; set; }
+
+        [Required(ErrorMessage = "Rating is required")]
+        public int Rating { get; set; }
+
+        public Recipe Recipe { get; set; }
+    }
 }

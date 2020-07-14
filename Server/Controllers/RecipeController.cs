@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using ApnaBawarchiKhana.Server.Services;
 using ApnaBawarchiKhana.Shared;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApnaBawarchiKhana.Server.Controllers
@@ -62,6 +60,12 @@ namespace ApnaBawarchiKhana.Server.Controllers
         public async Task DeleteRecipe(int recipeId)
         {
             await _recipeService.DeleteRecipe(recipeId);
+        }
+
+        [HttpPost("[action]")]
+        public async Task StoreRecipeRating([FromBody]RecipeRatingForm recipeRatingForm)
+        {
+            await _recipeService.StoreRecipeRating(recipeRatingForm);
         }
     }
 }

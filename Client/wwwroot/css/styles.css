@@ -693,3 +693,8 @@ hr {
 .recipeImgFluidHeight{
     height: 340px !important;
 }
+
+.ratingStarSize {
+  font-size: 0.8rem;
+  color: #a44c9f;
+}

@@ -31,7 +31,7 @@ namespace ApnaBawarchiKhana.Server
 
             try
             {
-                CreateHostBuilder(args).UseSerilog().Build().Run();
+                CreateHostBuilder(args).Build().Run();
             }
             finally
             {

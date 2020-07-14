@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ApnaBawarchiKhana.Shared
 {
@@ -10,5 +8,6 @@ namespace ApnaBawarchiKhana.Shared
         public string Title { get; set; }
         public string Description { get; set; }
         public byte[] Thumbnail { get; set; }
+        public List<int> Ratings { get; set; }
     }
 }
