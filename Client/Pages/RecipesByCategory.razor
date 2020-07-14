@@ -18,14 +18,12 @@
 
         @if (isLoading)
         {
-            <div class="d-flex flex-row w-100 justify-content-center mb-5">
-                <div class="loader"></div>
-            </div>
+           <Loader/>
         }
 
         @if(!string.IsNullOrEmpty(ResponseMessage))
         {
-            <h4 class="roboto alert alert-danger"> @ResponseMessage </h4>
+            <h4 class="roboto alert alert-danger mt-3"> @ResponseMessage </h4>
         }
 
         @if (Recipes != null && Recipes.Any())
