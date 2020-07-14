@@ -8,6 +8,6 @@ namespace ApnaBawarchiKhana.Shared
         public string Title { get; set; }
         public string Description { get; set; }
         public byte[] Thumbnail { get; set; }
-        public List<int> Ratings { get; set; }
+        public double Ratings { get; set; }
     }
 }

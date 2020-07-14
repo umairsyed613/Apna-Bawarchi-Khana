@@ -82,7 +82,7 @@ namespace ApnaBawarchiKhana.Server.Services
                                    Description = r.Description,
                                    Title = r.Title,
                                    Thumbnail = r.RecipeImages.Any() ? r.RecipeImages.First().UploadedImage.ImageData : null,
-                                   Ratings = r.RecipeRatings.Select(s => s.Rating).ToList()
+                                   Ratings = AverageCalculator.GetAverageRating(r.RecipeRatings.Select(s => s.Rating).ToList())
                                }).ToListAsync();
 
             if (result == null)

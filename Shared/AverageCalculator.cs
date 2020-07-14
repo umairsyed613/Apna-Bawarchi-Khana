@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ApnaBawarchiKhana.Client.Helper
+namespace ApnaBawarchiKhana.Shared
 {
     public class AverageCalculator
     {

@@ -1,7 +1,6 @@
 ﻿@page "/recipebycategory/{catId}"
 @page "/recipebycategory/{catId}/{catName}"
 
-@using ApnaBawarchiKhana.Client.Helper
 @using ApnaBawarchiKhana.Shared
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
@@ -46,14 +45,7 @@
                                 <div class="d-flex flex-row mb-2">
                                     <div class="flex-fill text-truncate roboto text-dark font-weight-bold">@recipe.Title</div>
                                     <div>
-                                        @*<i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>*@
-                                        @{
-                                            var average = AverageCalculator.GetAverageRating(recipe.Ratings);
-
-                                                <span class="roboto">@average <i class="fa fa-star ratingStarSize" aria-hidden="true"></i></span>
-                                            }
+                                        <span class="roboto">@recipe.Ratings <i class="fa fa-star ratingStarSize" aria-hidden="true"></i></span>
                                         </div>
                                 </div>
 
